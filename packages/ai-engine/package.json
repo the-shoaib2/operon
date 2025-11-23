@@ -9,7 +9,11 @@
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
-        "@repo/types": "workspace:*"
+        "@ai-sdk/anthropic": "^2.0.45",
+        "@ai-sdk/openai": "^2.0.71",
+        "@repo/mcp-tools": "workspace:*",
+        "@repo/types": "workspace:*",
+        "ai": "^5.0.100"
     },
     "devDependencies": {
         "@repo/eslint-config": "workspace:*",

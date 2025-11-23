@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 export default async function AuthSuccessPage({
     searchParams,
 }: {
-    searchParams: { token?: string }
+    searchParams: { token?: string; from?: string }
 }) {
     const session = await auth()
 
@@ -12,9 +12,12 @@ export default async function AuthSuccessPage({
         redirect('/login')
     }
 
-    // If there's a token in the URL, redirect to the desktop app
-    if (searchParams.token) {
-        const deepLink = `operone://auth?token=${searchParams.token}`
+    // If coming from desktop login or has token
+    if (searchParams.token || searchParams.from === 'desktop') {
+        // In a real app, generate a secure token or auth code here
+        // For now, we'll use a placeholder or the session ID if available
+        const token = searchParams.token || Buffer.from(session.user?.email || 'user').toString('base64')
+        const deepLink = `operone://auth?token=${token}`
 
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">

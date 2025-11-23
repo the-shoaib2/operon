@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import path from 'path'
 import Store from 'electron-store'
 
@@ -7,6 +7,65 @@ const store = new Store()
 let mainWindow: BrowserWindow | null = null
 
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
+
+import { OSAgent } from '@repo/ai-engine'
+import { openai } from '@ai-sdk/openai'
+
+// AI Service placeholder - will be initialized when needed
+let aiService: any = null
+
+async function initializeAIService() {
+  if (aiService) return aiService
+
+  const apiKey = store.get('settings.openaiApiKey') as string || process.env.OPENAI_API_KEY
+  
+  if (!apiKey) {
+    console.warn('No OpenAI API key found')
+  }
+
+  // Initialize agent
+  const agent = new OSAgent({
+    model: openai('gpt-4o'),
+    allowedPaths: [app.getPath('home'), app.getPath('documents'), app.getPath('downloads')],
+    allowedCommands: ['ls', 'echo', 'grep', 'cat', 'git', 'npm']
+  })
+  
+  aiService = {
+    sendMessage: async (message: string) => {
+      try {
+        // Simple Think-Act loop
+        console.log('User message:', message)
+        const thought = await agent.think(message)
+        console.log('Agent thought:', thought)
+        
+        if (thought.includes('FINAL ANSWER:')) {
+          const answer = thought.split('FINAL ANSWER:')[1];
+          return answer ? answer.trim() : thought;
+        }
+        
+        // If it's an action, execute it
+        await agent.act(thought)
+        const observation = await agent.observe()
+        
+        return `Executed: ${thought}\nResult: ${observation}`
+      } catch (error: any) {
+        console.error('AI Error:', error)
+        return `Error: ${error.message}`
+      }
+    },
+    ingestDocument: async (data: any) => {
+      console.log('Ingesting document:', data.id)
+    },
+    queryMemory: async (_query: string) => {
+      return []
+    },
+    getStats: async () => {
+      return { vectorDocuments: 0, shortTermMemory: 0 }
+    }
+  }
+
+  return aiService
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -58,8 +117,44 @@ function handleDeepLink(url: string) {
   }
 }
 
+// IPC Handlers
+function setupIPCHandlers() {
+  // AI Chat
+  ipcMain.handle('ai:sendMessage', async (_event, message: string) => {
+    const service = await initializeAIService()
+    return await service.sendMessage(message)
+  })
+
+  // Memory operations
+  ipcMain.handle('ai:ingestDocument', async (_event, data) => {
+    const service = await initializeAIService()
+    return await service.ingestDocument(data)
+  })
+
+  ipcMain.handle('ai:queryMemory', async (_event, query: string) => {
+    const service = await initializeAIService()
+    return await service.queryMemory(query)
+  })
+
+  ipcMain.handle('ai:getStats', async () => {
+    const service = await initializeAIService()
+    return await service.getStats()
+  })
+
+  // Settings
+  ipcMain.handle('settings:get', async () => {
+    return store.get('settings', {})
+  })
+
+  ipcMain.handle('settings:update', async (_event, settings) => {
+    store.set('settings', settings)
+    return true
+  })
+}
+
 app.whenReady().then(() => {
   registerProtocolHandler()
+  setupIPCHandlers()
   createWindow()
 
   app.on('activate', () => {
