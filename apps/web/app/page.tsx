@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
-import { ArrowRight, CheckCircle2, Zap, Shield, Globe } from "lucide-react"
+import { ArrowRight, CheckCircle2, Zap, Globe } from "lucide-react"
+import Image from "next/image"
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <div className="container flex h-14 items-center">
           <div className="mr-4 hidden md:flex">
             <Link href="/" className="mr-6 flex items-center space-x-2">
+              <Image src="/logo/passkey.svg" alt="Operone" width={24} height={24} className="h-6 w-6" />
               <span className="hidden font-bold sm:inline-block">
                 Operone
               </span>
@@ -95,7 +97,7 @@ export default function Home() {
             </div>
             <div className="relative overflow-hidden rounded-lg border bg-background p-2">
               <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                <Shield className="h-12 w-12 text-primary" />
+                <Image src="/logo/passkey.svg" alt="Passkey" width={48} height={48} className="h-12 w-12 text-primary" />
                 <div className="space-y-2">
                   <h3 className="font-bold">Secure Auth</h3>
                   <p className="text-sm text-muted-foreground">

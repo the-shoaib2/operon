@@ -3,7 +3,11 @@
 import { useState } from 'react'
 import { startRegistration } from '@simplewebauthn/browser'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
+import { Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { PasskeyIcon } from './icons/passkey'
 
 export function PasskeyRegister() {
     const [isLoading, setIsLoading] = useState(false)
@@ -66,28 +70,51 @@ export function PasskeyRegister() {
 
     if (success) {
         return (
-            <div className="text-center space-y-2">
-                <div className="text-4xl">✓</div>
-                <p className="text-sm text-green-600 dark:text-green-400">
-                    Passkey registered successfully!
-                </p>
-            </div>
+            <Card className="w-full">
+                <CardContent className="p-6 text-center space-y-4">
+                    <div className="flex justify-center">
+                        <Image
+                            src="/logo/passkey.svg"
+                            alt="Success"
+                            width={48}
+                            height={48}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="text-sm text-green-600 dark:text-green-400">
+                        Passkey registered successfully!
+                    </p>
+                </CardContent>
+            </Card>
         )
     }
 
     return (
-        <div className="space-y-4">
-            <Button
-                onClick={handleRegister}
-                disabled={isLoading}
-                className="w-full"
-                variant="outline"
-            >
-                {isLoading ? 'Registering...' : 'Register Passkey'}
-            </Button>
-            {error && (
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            )}
-        </div>
+        <Card className="w-full">
+            <CardContent className="p-6 space-y-4">
+                <Button
+                    onClick={handleRegister}
+                    disabled={isLoading}
+                    className="w-full"
+                    size="lg"
+                    variant="default"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Registering...
+                        </>
+                    ) : (
+                        <>
+                            <PasskeyIcon width={40} height={40} className="mr-2" />
+                            Register Passkey
+                        </>
+                    )}
+                </Button>
+                {error && (
+                    <p className="text-sm text-destructive">{error}</p>
+                )}
+            </CardContent>
+        </Card>
     )
 }

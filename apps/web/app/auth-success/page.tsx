@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 
 export default async function AuthSuccessPage({
     searchParams,
@@ -22,7 +23,7 @@ export default async function AuthSuccessPage({
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
                 <div className="text-center space-y-6 p-8">
-                    <div className="text-6xl">✓</div>
+                    <Image src="/logo/passkey.svg" alt="Passkey" width={64} height={64} className="w-16 h-16 mx-auto" />
                     <h1 className="text-3xl font-bold text-white">Authentication Successful!</h1>
                     <p className="text-gray-300">Redirecting to Operone Desktop App...</p>
                     <a
@@ -32,7 +33,7 @@ export default async function AuthSuccessPage({
                         Open Operone Desktop
                     </a>
                     <p className="text-sm text-gray-400">
-                        If the app doesn't open automatically, click the button above
+                        If the app doesn&apos;t open automatically, click the button above
                     </p>
                 </div>
             </div>

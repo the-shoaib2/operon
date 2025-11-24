@@ -3,7 +3,10 @@ import type { VerifiedRegistrationResponse, VerifiedAuthenticationResponse } fro
 import type { RegistrationResponseJSON, AuthenticationResponseJSON, PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types'
 
 const rpName = 'Operone'
-const rpID = process.env.NEXTAUTH_URL?.replace('http://', '').replace('https://', '') || 'localhost'
+// Extract hostname without port for RP ID (WebAuthn doesn't allow ports in RP ID)
+const rpID = process.env.NEXTAUTH_URL 
+  ? new URL(process.env.NEXTAUTH_URL).hostname 
+  : 'localhost'
 const origin = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
 export const webAuthnConfig = {
