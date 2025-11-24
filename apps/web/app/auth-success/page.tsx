@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import { CloseButton } from '@/components/close-button';
 
 // In-memory token store (shared with validate-token API)
 const tokenStore = new Map<string, { userId: string; expiresAt: number }>()
@@ -29,11 +30,11 @@ function storeTokenForUser(userId: string): string {
 // Export token store for use in API route
 export { tokenStore }
 
-export default async function AuthSuccessPage({
-    searchParams,
-}: {
-    searchParams: { token?: string; from?: string }
+export default async function AuthSuccessPage(props: {
+    searchParams: Promise<{ token?: string; from?: string }>
 }) {
+    const searchParams = await props.searchParams
+    const { token, from } = searchParams
     const session = await auth()
 
     if (!session || !session.user) {
@@ -41,7 +42,7 @@ export default async function AuthSuccessPage({
     }
 
     // If coming from desktop login or has token
-    if (searchParams.token || searchParams.from === 'desktop') {
+    if (token || from === 'desktop') {
         // Generate a secure token for the desktop app
         const token = storeTokenForUser(session.user.id!)
         const deepLink = `operone://auth?token=${token}`
@@ -74,12 +75,7 @@ export default async function AuthSuccessPage({
                         >
                             Open Operone Desktop
                         </a>
-                        <button
-                            onClick={() => window.close()}
-                            className="inline-block px-6 py-3 bg-secondary text-secondary-foreground rounded-lg font-semibold hover:bg-secondary/80 transition"
-                        >
-                            Cancel
-                        </button>
+                        <CloseButton />
                     </div>
 
                     <p className="text-sm text-muted-foreground">
