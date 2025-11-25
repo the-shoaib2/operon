@@ -88,7 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <div className="relative group flex-1">
                 <SidebarMenuButton size="lg" asChild className="flex-1">
                   <Link to="/dashboard/overview">
@@ -145,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupLabel>
           {expandedSections.chats && (
             <SidebarGroupContent>
-              <div className="max-h-64 overflow-y-auto border-l-2 border-border pl-2">
+              <div className="max-h-64 overflow-y-auto">
                 <SidebarMenu>
                   {conversations.map((conversation) => (
                     <SidebarMenuItem key={conversation.id}>
