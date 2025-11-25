@@ -37,6 +37,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { ChatStatus, FileUIPart } from "ai";
 import {
+  ArrowUpIcon,
   CornerDownLeftIcon,
   ImageIcon,
   Loader2Icon,
@@ -995,7 +996,7 @@ export const PromptInputSubmit = ({
   children,
   ...props
 }: PromptInputSubmitProps) => {
-  let Icon = <CornerDownLeftIcon className="size-4" />;
+  let Icon = <ArrowUpIcon className="size-4" />;
 
   if (status === "submitted") {
     Icon = <Loader2Icon className="size-4 animate-spin" />;
