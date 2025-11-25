@@ -147,7 +147,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroupContent>
               <div className="max-h-64 overflow-y-auto">
                 <SidebarMenu>
-                  {conversations.map((conversation) => (
+                  {conversations.map((conversation, index) => (
                     <SidebarMenuItem key={conversation.id}>
                       <SidebarMenuButton asChild>
                         <Link to={conversation.url} className="flex items-center justify-between w-full">
@@ -160,6 +160,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           )}
                         </Link>
                       </SidebarMenuButton>
+                      {index < conversations.length - 1 && (
+                        <div className="border-t border-border mx-2 my-1" />
+                      )}
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>
@@ -170,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {/* Projects Section */}
         <SidebarGroup className="group-data-[collapsible=icon]:hidden gap-0 py-1">
-          <SidebarGroupLabel>
+          <SidebarGroupLabel className="px-0">
             <SidebarMenuButton 
               onClick={() => toggleSection('projects')}
               className="w-full justify-between"
