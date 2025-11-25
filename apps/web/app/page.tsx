@@ -1,8 +1,11 @@
-import { Button } from "@/components"
+import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { ArrowRight, CheckCircle2, Zap, Globe } from "lucide-react"
 import Image from "next/image"
+import { metadata as homeMetadata } from './metadata'
+
+export { homeMetadata as metadata }
 
 export default function Home() {
   return (

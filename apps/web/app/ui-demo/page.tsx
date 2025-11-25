@@ -1,5 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { metadata as uiDemoMetadata } from './metadata'
+
+export { uiDemoMetadata as metadata }
 
 export default function UIDemoPage() {
   return (

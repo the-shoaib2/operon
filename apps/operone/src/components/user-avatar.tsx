@@ -38,7 +38,7 @@ interface UserData {
 }
 
 interface UserAvatarProps {
-  user?: UserData | { data: UserData }
+  user?: UserData | { data: UserData } | { id: string; email: string; name: string; image?: string }
   className?: string
   showStatus?: boolean
   isLoading?: boolean
@@ -54,7 +54,26 @@ export function UserAvatar({
   onLoad,
   useThumb = true
 }: UserAvatarProps) {
-  const userData = user && 'data' in user ? user.data : user
+  let userData: UserData | undefined = undefined
+  
+  // Handle different user types
+  if (user && 'data' in user) {
+    userData = user.data
+  } else if (user && 'basicInfo' in user) {
+    userData = user
+  } else if (user && 'name' in user && 'email' in user) {
+    // Convert auth context User to UserData format
+    userData = {
+      basicInfo: {
+        name: {
+          firstName: user.name.split(' ')[0],
+          lastName: user.name.split(' ').slice(1).join(' ')
+        },
+        email: user.email,
+        avatar: user.image
+      }
+    }
+  }
 
   const displayName = React.useMemo(() => {
     if (!userData) return 'Guest User'
@@ -153,7 +172,7 @@ export function UserAvatar({
 }
 
 interface UserAvatarWithInfoProps {
-  user?: UserData
+  user?: UserData | { id: string; email: string; name: string; image?: string }
   className?: string
   isLoading?: boolean
 }
@@ -161,6 +180,12 @@ interface UserAvatarWithInfoProps {
 export function UserAvatarWithInfo({ user, className, isLoading }: UserAvatarWithInfoProps) {
   // Format name with proper capitalization and null checks
   const formattedName = React.useMemo(() => {
+    // Handle auth context User type
+    if (user && 'name' in user && 'email' in user) {
+      return user.name || user.email?.split('@')[0] || ''
+    }
+    
+    // Handle UserData type
     if (!user?.basicInfo?.name?.firstName || !user?.basicInfo?.name?.lastName) {
       return user?.basicInfo?.email?.split('@')[0] || ''
     }
@@ -177,6 +202,16 @@ export function UserAvatarWithInfo({ user, className, isLoading }: UserAvatarWit
     const lastName = formatName(user?.basicInfo?.name?.lastName)
 
     return `${firstName} ${lastName}`.trim()
+  }, [user])
+
+  // Get email for display
+  const displayEmail = React.useMemo(() => {
+    // Handle auth context User type
+    if (user && 'email' in user) {
+      return user.email
+    }
+    // Handle UserData type
+    return user?.basicInfo?.email
   }, [user])
 
   if (isLoading) {
@@ -198,7 +233,7 @@ export function UserAvatarWithInfo({ user, className, isLoading }: UserAvatarWit
       <UserAvatar user={user} className={className || "h-8 w-8"} />
       <div className="grid flex-1 text-left text-sm leading-tight">
         <span className="truncate font-semibold">{formattedName}</span>
-        <span className="truncate text-xs">{user?.basicInfo?.email}</span>
+        <span className="truncate text-xs">{displayEmail}</span>
       </div>
     </div>
   )

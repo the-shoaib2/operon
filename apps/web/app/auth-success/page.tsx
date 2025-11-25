@@ -1,11 +1,13 @@
-import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { buttonVariants } from '@/components/ui/button'
+import { CloseButton } from '@/components/close-button'
 import { cn } from '@/lib/utils'
 import { CheckCircle2 } from 'lucide-react'
+import { metadata as authSuccessMetadata } from './metadata'
+
+export { authSuccessMetadata as metadata }
 
 import { prisma } from '@/lib/prisma'
 

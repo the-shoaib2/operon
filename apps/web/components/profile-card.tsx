@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Card, CardContent } from "@/components";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";

@@ -298,6 +298,9 @@ importers:
       '@repo/ai-engine':
         specifier: workspace:*
         version: link:../../packages/core-engine
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ai:
         specifier: ^5.0.100
         version: 5.0.100(zod@4.1.12)

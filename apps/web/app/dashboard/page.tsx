@@ -6,6 +6,9 @@ import { ProfileCard } from '@/components/profile-card'
 import { PasskeyManagement } from '@/components/passkey-management'
 import { SessionManagement } from '@/components/session-management'
 import { Monitor } from 'lucide-react'
+import { metadata as dashboardMetadata } from './metadata'
+
+export { dashboardMetadata as metadata }
 
 export default async function DashboardPage() {
     const session = await auth()
