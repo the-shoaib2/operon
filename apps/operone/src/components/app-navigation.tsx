@@ -14,13 +14,10 @@ import {
   SquarePlus,
   Search,
   Library,
-  FolderOpen,
-  ChevronRight,
-  ChevronDown,
 } from "lucide-react"
 
 // Define role-based navigation items
-export const getNavItems = (role) => {
+export const getNavItems = (role: string) => {
   const baseItems = [
     {
       title: "Dashboard",
