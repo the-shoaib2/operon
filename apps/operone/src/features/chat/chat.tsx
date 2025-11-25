@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { 
-  Sparkles, Loader2, Mic, Paperclip
+import {
+  Sparkles, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAI } from "@/contexts/ai-context";
-import { useModelDetector } from "@/contexts";
 import type { FileUIPart, ChatStatus } from "ai";
 
 // AI Component Imports
