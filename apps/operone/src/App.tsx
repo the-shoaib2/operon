@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Suspense, lazy } from 'react'
 import { AuthProvider, useAuth } from './contexts/auth-context'
 import { AIProvider } from './contexts/ai-context'
-import { ChatProvider } from './contexts/chat-context'
+import { ProjectProvider } from './contexts/project-context'
 import { ModelDetectorProvider } from './contexts'
 import { LoginScreen } from './components/auth/login-screen'
 import { AppLayout } from './components/layout/app-layout'
@@ -12,6 +12,7 @@ import { Loader } from './components/ai/loader'
 
 // Lazy load feature components
 const ChatInterface = lazy(() => import('./features/chat/chat').then(module => ({ default: module.default })))
+const ProjectDetail = lazy(() => import('./features/project/project-detail').then(module => ({ default: module.ProjectDetail })))
 const SettingsPanel = lazy(() => import('./features/settings/settings-panel').then(module => ({ default: module.SettingsPanel })))
 const MemoryInspector = lazy(() => import('./features/memory/memory-inspector').then(module => ({ default: module.MemoryInspector })))
 const AddModelPage = lazy(() => import('./features/settings/add-model-page').then(module => ({ default: module.AddModelPage })))
@@ -49,14 +50,14 @@ function AppContent() {
 
     // Show main app if authenticated
     return (
-        <ChatProvider>
+        <ProjectProvider>
             <AppLayout>
                 <ModelDetectorProvider>
                     <Suspense fallback={<LoadingSpinner />}>
                         <Routes>
                         <Route path="/dashboard/chat" element={<ChatInterface />} />
-                        <Route path="/dashboard/chat/:chatId" element={<ChatInterface />} />
                         <Route path="/dashboard/memory" element={<MemoryInspector />} />
+                        <Route path="/project/:projectId" element={<ProjectDetail />} />
                         <Route path="/settings/account" element={<SettingsPanel />} />
                         <Route path="/settings/billing" element={<SettingsPanel />} />
                         <Route path="/settings/notifications" element={<SettingsPanel />} />
@@ -68,7 +69,7 @@ function AppContent() {
                 </Suspense>
             </ModelDetectorProvider>
         </AppLayout>
-        </ChatProvider>
+    </ProjectProvider>
     )
 }
 

@@ -1,6 +1,6 @@
 import * as React from "react"
-import { Command, MessageSquare, FolderOpen, ChevronRight, ChevronDown, Plus, Trash2 } from "lucide-react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Command, MessageSquare, FolderOpen, ChevronRight, ChevronDown, Plus } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -23,19 +23,29 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/contexts"
-import { useChat } from "@/contexts/chat-context"
-import { commonNavItems, quickActions, conversations, projects, truncateText } from "@/components/app-navigation"
+import { useProject } from "@/contexts/project-context"
+import { CreateProjectDialog } from "@/components/project/create-project-dialog"
+import { commonNavItems, quickActions, truncateText } from "@/components/app-navigation"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
   const location = useLocation()
-  const navigate = useNavigate()
-  const { chats, currentChatId, createNewChat, deleteChat, switchToChat } = useChat()
+  const { 
+    projects, 
+    chats, 
+    currentProject, 
+    currentChat,
+    createChat,
+    setCurrentChat,
+    setCurrentProject 
+  } = useProject()
+  
+  const [createProjectDialogOpen, setCreateProjectDialogOpen] = React.useState(false)
   
   // Optimized data structure like ChatGPT
   const [expandedSections, setExpandedSections] = React.useState({
-    chats: true,
-    projects: false
+    chats: false,
+    projects: true
   })
 
   const toggleSection = (section: 'chats' | 'projects') => {
@@ -43,6 +53,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       ...prev,
       [section]: !prev[section]
     }))
+  }
+  
+  // Get chats not associated with any project (general chats)
+  const generalChats = chats.filter(chat => !chat.projectId)
+  
+  // Handle creating a new project
+  const handleCreateProject = (project: any) => {
+    setCurrentProject(project)
+    // Navigate to the new project
+    window.location.href = `/project/${project.id}`
   }
   
   
@@ -78,7 +98,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     navMain: navMainItems,
     navSecondary: filteredNavSecondary,
-    projects: [], // No projects for now
+    projects: projects,
     teams: [{
       name: "Operone",
       logo: Command,
@@ -141,7 +161,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <span className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4" />
-                Chats ({chats.length})
+                Chats
               </span>
               {expandedSections.chats ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </SidebarMenuButton>
@@ -152,41 +172,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                   {/* Create New Chat */}
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => {
-                        const newChatId = createNewChat()
-                        navigate(`/dashboard/chat/${newChatId}`)
-                      }}
-                      className="text-sidebar-foreground/70"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>New chat</span>
+                    <SidebarMenuButton asChild className="text-sidebar-foreground/70">
+                      <button
+                        onClick={() => {
+                          const newChat = createChat()
+                          setCurrentChat(newChat)
+                          window.location.href = '/dashboard/chat'
+                        }}
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>New chat</span>
+                      </button>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   
-                  {/* Chat List */}
-                  {chats.map((chat) => (
+                  {generalChats.map((chat) => (
                     <SidebarMenuItem key={chat.id}>
-                      <SidebarMenuButton asChild className={currentChatId === chat.id ? "bg-accent" : ""}>
-                        <Link to={`/dashboard/chat/${chat.id}`} className="flex items-center justify-between w-full group">
+                      <SidebarMenuButton asChild>
+                        <Link to={`/dashboard/chat?chatId=${chat.id}`} className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-2 min-w-0 flex-1">
                             <MessageSquare className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">{chat.title}</span>
+                            <span className="truncate">{truncateText(chat.title, 20)}</span>
                           </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                if (confirm('Delete this chat?')) {
-                                  deleteChat(chat.id)
-                                }
-                              }}
-                              className="p-1 hover:bg-destructive hover:text-destructive-foreground rounded"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
+                          <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                            {chat.updatedAt.toLocaleDateString()}
+                          </span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -217,34 +228,49 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {/* Create New Project */}
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild className="text-sidebar-foreground/70">
-                    <Link to="/project/new" className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCreateProjectDialogOpen(true)}
+                      className="flex items-center gap-2 w-full"
+                    >
                       <Plus className="w-4 h-4" />
                       <span>New project</span>
-                    </Link>
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 
                 {/* Projects with nested conversations */}
-                {projects.map((project) => (
-                  <SidebarMenuItem key={project.id}>
-                    <SidebarMenuButton className="font-medium text-sidebar-foreground">
-                      <FolderOpen className="w-4 h-4" />
-                      <span>{project.name}</span>
-                    </SidebarMenuButton>
-                    <SidebarMenuSub>
-                      {project.conversations.map((conversation) => (
-                        <SidebarMenuSubItem key={conversation.id}>
-                          <SidebarMenuSubButton asChild>
-                            <Link to={conversation.url} className="flex items-center gap-2 min-w-0 flex-1">
-                              <MessageSquare className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate">{truncateText(conversation.title, 18)}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </SidebarMenuItem>
-                ))}
+                {projects.map((project) => {
+                  const projectChats = chats.filter(chat => chat.projectId === project.id)
+                  return (
+                    <SidebarMenuItem key={project.id}>
+                      <SidebarMenuButton asChild>
+                        <Link to={`/project/${project.id}`} className="flex items-center gap-2">
+                          <FolderOpen className="w-4 h-4" />
+                          <span>{project.name}</span>
+                          {projectChats.length > 0 && (
+                            <span className="text-xs text-muted-foreground ml-auto">
+                              {projectChats.length}
+                            </span>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                      {projectChats.length > 0 && (
+                        <SidebarMenuSub>
+                          {projectChats.map((chat) => (
+                            <SidebarMenuSubItem key={chat.id}>
+                              <SidebarMenuSubButton asChild>
+                                <Link to={`/project/${project.id}?chatId=${chat.id}`} className="flex items-center gap-2 min-w-0 flex-1">
+                                  <MessageSquare className="w-3 h-3 flex-shrink-0" />
+                                  <span className="truncate">{truncateText(chat.title, 18)}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      )}
+                    </SidebarMenuItem>
+                  )
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           )}
@@ -256,6 +282,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={sidebarData.user} />
       </SidebarFooter>
       <SidebarRail />
+      
+      {/* Create Project Dialog */}
+      <CreateProjectDialog
+        open={createProjectDialogOpen}
+        onOpenChange={setCreateProjectDialogOpen}
+        onSuccess={handleCreateProject}
+      />
     </Sidebar>
   )
 }

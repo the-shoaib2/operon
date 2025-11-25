@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import {
-  Sparkles,
-  Plus
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAI } from "@/contexts/ai-context";
-import { useChat } from "@/contexts/chat-context";
+import { useProject } from "@/contexts/project-context";
+import { useLocation } from "react-router-dom";
 import type { FileUIPart, ChatStatus } from "ai";
 
 // AI Component Imports
@@ -35,42 +34,27 @@ interface ChatLayoutProps {
 export const ChatLayout = React.memo(function ChatLayout({ 
   className
 }: ChatLayoutProps) {
-  const { chatId } = useParams<{ chatId?: string }>();
-  const navigate = useNavigate();
-  
   const { 
+    messages, 
     sendMessageStreaming, 
     isLoading, 
     streamingMessage
   } = useAI();
   
-  const {
-    currentChat,
-    createNewChat,
-    switchToChat,
-    addMessageToChat,
-    updateChatMessages
-  } = useChat();
+  const { 
+    currentChat, 
+    updateChat, 
+    generateChatTitle 
+  } = useProject();
+  
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const chatId = searchParams.get('chatId');
   
   const [input, setInput] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [chatStatus, setChatStatus] = useState<ChatStatus>("ready");
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Handle chat ID from URL
-  useEffect(() => {
-    if (chatId) {
-      // If there's a chatId in URL, switch to that chat
-      switchToChat(chatId);
-    } else {
-      // If no chatId, create a new chat and navigate to it
-      const newChatId = createNewChat();
-      navigate(`/dashboard/chat/${newChatId}`, { replace: true });
-    }
-  }, [chatId, switchToChat, createNewChat, navigate]);
-
-  // Use current chat's messages
-  const messages = currentChat?.messages || [];
 
   // Optimized auto-scroll with useCallback
   const scrollToBottom = useCallback(() => {
@@ -79,143 +63,161 @@ export const ChatLayout = React.memo(function ChatLayout({
     }
   }, []);
 
-  // Auto-scroll when messages change
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [messages, isLoading, streamingMessage, scrollToBottom]);
 
-  // Handle sending messages
-  const handleSendMessage = useCallback(async (content: string) => {
-    if (!content.trim() || isLoading || !currentChat) return;
+  // Generate chat title when messages are available and chat doesn't have a proper title
+  useEffect(() => {
+    if (currentChat && messages.length > 0 && currentChat.title === 'New Chat') {
+      generateChatTitle(currentChat.id, messages);
+    }
+  }, [messages, currentChat, generateChatTitle]);
 
-    // Add user message to current chat
-    const userMessage = {
-      id: Date.now().toString(),
-      role: "user" as const,
-      content: content.trim(),
-      timestamp: new Date(),
-    };
-    
-    addMessageToChat(currentChat.id, userMessage);
-    setInput("");
-    setChatStatus("streaming");
+  // Update chat messages in project context
+  useEffect(() => {
+    if (currentChat && messages.length > 0) {
+      updateChat(currentChat.id, { 
+        messages: messages,
+        updatedAt: new Date()
+      });
+    }
+  }, [messages, currentChat, updateChat]);
 
-    try {
-      // Send message to AI
-      await sendMessageStreaming(content);
+  // Update chat status based on loading state
+  useEffect(() => {
+    if (isLoading) {
+      setChatStatus("submitted");
+    } else if (streamingMessage) {
+      setChatStatus("streaming");
+    } else {
       setChatStatus("ready");
+    }
+  }, [isLoading, streamingMessage]);
+
+  // Memoized submit handler with proper error handling
+  const handleSubmit = useCallback(async (message: { text: string; files: FileUIPart[] }) => {
+    if (!message.text.trim()) return;
+    
+    setInput("");
+    
+    try {
+      await sendMessageStreaming(message.text);
     } catch (error) {
       console.error("Failed to send message:", error);
       setChatStatus("error");
     }
-  }, [content, isLoading, currentChat, addMessageToChat, sendMessageStreaming]);
+  }, [sendMessageStreaming]);
 
-  // Handle new chat creation
-  const handleNewChat = useCallback(() => {
-    const newChatId = createNewChat();
-    navigate(`/dashboard/chat/${newChatId}`);
-  }, [createNewChat, navigate]);
+  // Memoized transformed messages with proper typing
+  const transformedMessages = useMemo(() => 
+    messages.map((msg) => ({
+      id: msg.id,
+      role: msg.role,
+      content: msg.content,
+    })),
+    [messages]
+  );
 
-  // Handle input change
-  const handleInputChange = useCallback((value: string) => {
-    setInput(value);
+  // Memoized suggestion buttons with shadcn-friendly labels
+  const suggestionButtons = useMemo(() => [
+    "Start a conversation",
+    "Explain the architecture", 
+    "Create a code example",
+    "Generate an artifact"
+  ], []);
+
+  // Memoized suggestion click handler
+  const handleSuggestionClick = useCallback((suggestion: string) => {
+    setInput(suggestion);
   }, []);
 
-  // Handle key press
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage(input);
-    }
-  }, [input, handleSendMessage]);
+  // Memoized status display with shadcn styling patterns
+  const statusDisplay = useMemo(() => {
+    return null;
+  }, []);
 
-  // Memoize chat messages for performance
-  const chatMessages = useMemo(() => {
-    return messages.map((message, index) => (
-      <Message key={message.id || `msg-${index}`} from={message.role}>
-        <MessageContent>
-          {message.content}
-        </MessageContent>
-      </Message>
-    ));
-  }, [messages]);
-
-  const hasMessages = messages.length > 0;
+  // Memoized message count display with shadcn typography
+  const messageCountDisplay = useMemo(() => (
+    <span className="text-sm text-muted-foreground">{messages.length} messages</span>
+  ), [messages.length]);
 
   return (
     <ChatLayoutContainer className={className}>
       <ChatMain>
         <ChatContent>
-          {hasMessages ? (
+          <ChatMessages>
             <ChatMessagesContainer>
-              <ChatMessages>
+              {messages.length === 0 ? (
+                <ChatEmptyState
+                  icon={<Sparkles className="w-5 h-5 text-primary-foreground" />}
+                  actions={
+                    suggestionButtons.map((suggestion) => (
+                      <Button
+                        key={suggestion}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        {suggestion}
+                      </Button>
+                    ))
+                  }
+                />
+              ) : (
                 <ChatMessageList>
-                  {chatMessages}
-                  {isLoading && streamingMessage && (
-                    <MessageLoading streamingMessage={streamingMessage} />
-                  )}
-                  <div ref={scrollRef} />
+                  {transformedMessages.map((message) => (
+                    <Message key={message.id} from={message.role}>
+                      <MessageContent>
+                        <div className="whitespace-pre-wrap break-words text-sm leading-relaxed">
+                          {message.content}
+                        </div>
+                      </MessageContent>
+                    </Message>
+                  ))}
                 </ChatMessageList>
-              </ChatMessages>
-              <ChatStatusBar>
-                {chatStatus === "streaming" && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Shimmer />
-                    <span>Operone is thinking...</span>
-                  </div>
-                )}
-                {chatStatus === "error" && (
-                  <div className="flex items-center gap-2 text-sm text-destructive">
-                    <span>Something went wrong. Please try again.</span>
-                  </div>
-                )}
-              </ChatStatusBar>
+              )}
+              
+              {/* Optimized loading indicator */}
+              <MessageLoading 
+                isLoading={isLoading} 
+                streamingMessage={streamingMessage || undefined}
+              />
+              
+              {/* Streaming message with shadcn shimmer */}
+              {streamingMessage && (
+                <div className="flex justify-start">
+                  <Message from="assistant">
+                    <MessageContent>
+                      <div className="whitespace-pre-wrap break-words text-sm leading-relaxed">
+                        {streamingMessage}
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Shimmer>Typing...</Shimmer>
+                      </div>
+                    </MessageContent>
+                  </Message>
+                </div>
+              )}
+
+              <div ref={scrollRef} />
             </ChatMessagesContainer>
-          ) : (
-            <ChatEmptyState>
-              <div className="flex flex-col items-center justify-center space-y-4 text-center max-w-md mx-auto">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-8 h-8 text-primary" />
-                  <h2 className="text-2xl font-semibold">Start a conversation</h2>
-                </div>
-                <p className="text-muted-foreground">
-                  Ask me anything! I'm here to help with your questions and tasks.
-                </p>
-                <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                  <span>💬 Try: "Help me write a Python script"</span>
-                  <span>🔍 Try: "Explain quantum computing"</span>
-                  <span>📝 Try: "Review this code for bugs"</span>
-                </div>
-              </div>
-            </ChatEmptyState>
-          )}
+          </ChatMessages>
+
+          <ChatInputContainer>
+            <ChatStatusBar status={statusDisplay} messageCount={messageCountDisplay} />
+            <ChatPromptInput
+              input={input}
+              setInput={setInput}
+              selectedModel={selectedModel}
+              setSelectedModel={setSelectedModel}
+              onSubmit={handleSubmit}
+              status={chatStatus}
+            />
+          </ChatInputContainer>
         </ChatContent>
-        
-        <ChatInputContainer>
-          <ChatPromptInput
-            value={input}
-            onChange={handleInputChange}
-            onSend={handleSendMessage}
-            onKeyPress={handleKeyPress}
-            disabled={isLoading}
-            placeholder={
-              hasMessages 
-                ? "Continue the conversation..." 
-                : "Type your message here..."
-            }
-            leftActions={
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={handleNewChat}
-                className="rounded-full"
-                title="New chat"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            }
-          />
-        </ChatInputContainer>
       </ChatMain>
     </ChatLayoutContainer>
   );
