@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Suspense, lazy } from 'react'
 import { AuthProvider, useAuth } from './contexts/auth-context'
 import { AIProvider } from './contexts/ai-context'
+import { ModelDetectorProvider } from './contexts'
 import { LoginScreen } from './components/auth/login-screen'
 import { AppLayout } from './components/layout/app-layout'
 import faviconUrl from './assets/favicon.ico'
@@ -47,8 +48,9 @@ function AppContent() {
     // Show main app if authenticated
     return (
         <AppLayout>
-            <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
+            <ModelDetectorProvider>
+                <Suspense fallback={<LoadingSpinner />}>
+                    <Routes>
                     <Route path="/dashboard/overview" element={<ChatInterface />} />
                     <Route path="/dashboard/chat" element={<ChatInterface />} />
                     <Route path="/dashboard/memory" element={<MemoryInspector />} />
@@ -61,7 +63,8 @@ function AppContent() {
                     <Route path="/dashboard" element={<Navigate to="/dashboard/overview" replace />} />
                 </Routes>
             </Suspense>
-        </AppLayout>
+        </ModelDetectorProvider>
+    </AppLayout>
     )
 }
 
