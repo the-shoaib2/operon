@@ -91,11 +91,33 @@ export interface ModelInfo {
   description?: string;
 }
 
+export interface GeneratedImage {
+  base64: string;
+  mediaType: string;
+  width?: number;
+  height?: number;
+  prompt?: string;
+}
+
+export interface ExactTextResult {
+  text: string;
+  metadata?: {
+    model: string;
+    tokens?: number;
+    duration?: number;
+  };
+}
+
+export type MessageType = 'text' | 'image' | 'exact-text' | 'mixed';
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
+  type?: MessageType;
+  images?: GeneratedImage[];
+  exactText?: ExactTextResult;
 }
 
 export interface AIServiceConfig {

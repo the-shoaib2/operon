@@ -31,7 +31,12 @@ const nextConfig = {
                 ]
             }
         ]
-    }
+    },
+    // Exclude server-only packages from client bundles
+    serverComponentsExternalPackages: ['better-sqlite3'],
+    experimental: {
+        serverComponentsExternalPackages: ['better-sqlite3'],
+    },
 }
 
 export default nextConfig;

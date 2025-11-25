@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { Plus, Trash2, Check, X, Loader2, Eye, EyeOff, Zap } from 'lucide-react';
-import { ModelRegistry } from '@repo/ai-engine';
+import { ModelRegistry } from '@repo/ai-engine/client';
 
 type ProviderType = 'openai' | 'anthropic' | 'google' | 'mistral' | 'ollama' | 'openrouter' | 'custom';
 
