@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState, useEffect } from "react"
 
 import {
   PromptInput,
@@ -44,6 +44,13 @@ export const ChatPromptInput = React.memo(function ChatPromptInput({
   onFocus,
 }: ChatPromptInputProps) {
   const { availableModels } = useModelDetector();
+  const animatedPlaceholders = [
+    "Ask me anything...",
+    "How can I help you today?",
+    "What's on your mind?",
+    "Need assistance with something?",
+    "Let's solve a problem together..."
+  ];
 
   const handleSubmit = useCallback((message: { text: string; files: any[] }, event: React.FormEvent<HTMLFormElement>) => {
     onSubmit(message, event);
@@ -98,8 +105,9 @@ export const ChatPromptInput = React.memo(function ChatPromptInput({
         value={input}
         onChange={handleInputChange}
         onFocus={onFocus}
-        placeholder="Type your message..."
-        className="resize-none"
+        animatedPlaceholders={animatedPlaceholders}
+        placeholderInterval={2000}
+        className="text-sm"
         rows={1}
       />
       <PromptInputFooter>

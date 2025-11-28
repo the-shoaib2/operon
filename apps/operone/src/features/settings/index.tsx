@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components'
 import { Input } from '@/components'
 import { Card } from '@/components'
@@ -6,44 +6,224 @@ import { Select } from '@/components'
 import { Label } from '@/components'
 import { Badge } from '@/components'
 import { Alert, AlertDescription } from '@/components'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAI } from '@/contexts/ai-context'
 import type { ProviderConfig, ProviderType, ModelInfo } from '@repo/types'
 import { BrowserAdapter } from '@repo/operone'
-import { Search } from 'lucide-react'
-import { SystemStatus } from '@/components/SystemStatus'
+import { Search, Settings, Database, Cpu, ChevronRight } from 'lucide-react'
+import { SystemStatus } from '@/components/system-status'
+import { cn } from '@/lib/utils'
 
 const { OllamaDetector } = BrowserAdapter;
 
+type TabType = 'ai' | 'memory' | 'system';
+
+interface SettingsSection {
+  id: TabType;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+}
+
+const settingsSections: SettingsSection[] = [
+  {
+    id: 'ai',
+    label: 'AI Settings',
+    icon: <Settings className="w-4 h-4" />,
+    description: 'Configure AI providers and models'
+  },
+  {
+    id: 'memory',
+    label: 'Memory',
+    icon: <Database className="w-4 h-4" />,
+    description: 'Manage memory and storage'
+  },
+  {
+    id: 'system',
+    label: 'System',
+    icon: <Cpu className="w-4 h-4" />,
+    description: 'System status and configuration'
+  }
+];
+
 export function UnifiedSettings() {
-    return (
-        <div className="p-6 max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div>
-                <h2 className="text-2xl font-semibold tracking-tight">Settings</h2>
-                <p className="text-muted-foreground">Manage your AI providers and system settings</p>
-            </div>
+  const [activeTab, setActiveTab] = useState<TabType>('ai');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<Record<TabType, HTMLDivElement | null>>({
+    ai: null,
+    memory: null,
+    system: null
+  });
 
-            <Tabs defaultValue="ai" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="ai">AI Settings</TabsTrigger>
-                    <TabsTrigger value="memory">Memory</TabsTrigger>
-                    <TabsTrigger value="system">System</TabsTrigger>
-                </TabsList>
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!scrollContainerRef.current) return;
 
-                <TabsContent value="ai" className="space-y-6">
-                    <AISettingsTab />
-                </TabsContent>
+      const scrollTop = scrollContainerRef.current.scrollTop;
+      const containerHeight = scrollContainerRef.current.clientHeight;
+      const scrollHeight = scrollContainerRef.current.scrollHeight;
 
-                <TabsContent value="memory" className="space-y-6">
-                    <MemoryTab />
-                </TabsContent>
+      // Determine which section is most visible
+      let mostVisibleSection: TabType = 'ai';
+      let maxVisibility = 0;
 
-                <TabsContent value="system" className="space-y-6">
-                    <SystemTab />
-                </TabsContent>
-            </Tabs>
+      Object.entries(sectionRefs.current).forEach(([sectionId, element]) => {
+        if (!element) return;
+
+        const rect = element.getBoundingClientRect();
+        const containerRect = scrollContainerRef.current!.getBoundingClientRect();
+        
+        const relativeTop = rect.top - containerRect.top;
+        const relativeBottom = rect.bottom - containerRect.top;
+        
+        const visibleTop = Math.max(0, relativeTop);
+        const visibleBottom = Math.min(containerHeight, relativeBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        
+        const visibilityPercentage = visibleHeight / rect.height;
+        
+        if (visibilityPercentage > maxVisibility) {
+          maxVisibility = visibilityPercentage;
+          mostVisibleSection = sectionId as TabType;
+        }
+      });
+
+      // Check if we've reached the end of a section
+      if (scrollTop + containerHeight >= scrollHeight - 10) {
+        // At the bottom, activate the last section
+        const lastSection = settingsSections[settingsSections.length - 1];
+        if (lastSection) {
+          setActiveTab(lastSection.id);
+        }
+      } else if (maxVisibility > 0.3) {
+        // If a section is sufficiently visible, switch to it
+        setActiveTab(mostVisibleSection);
+      }
+    };
+
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  const scrollToSection = (sectionId: TabType) => {
+    const element = sectionRefs.current[sectionId];
+    if (element && scrollContainerRef.current) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Sidebar Navigation - Fixed height, no scroll */}
+      <div className="w-64 lg:w-72 border-r bg-muted/30 flex-col h-full hidden md:flex">
+        <div className="p-6 flex-shrink-0">
+          <h2 className="text-lg font-semibold tracking-tight mb-2">Settings</h2>
+          <p className="text-sm text-muted-foreground mb-6">Manage your application settings</p>
         </div>
-    )
+        
+        <nav className="flex-1 px-6 pb-6 space-y-1 overflow-y-auto">
+          {settingsSections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => scrollToSection(section.id)}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
+                activeTab === section.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+            >
+              {section.icon}
+              <div className="flex-1 text-left">
+                <div className="font-medium">{section.label}</div>
+                <div className="text-xs opacity-70">{section.description}</div>
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-50" />
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Mobile Navigation Dropdown */}
+      <div className="md:hidden w-full p-4 border-b bg-background">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-lg font-semibold tracking-tight mb-3">Settings</h2>
+          <div className="flex flex-wrap gap-2">
+            {settingsSections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors border",
+                  activeTab === section.id
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted border-border"
+                )}
+              >
+                {section.icon}
+                <span>{section.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content - Scrollable */}
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto h-full"
+      >
+        <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-8">
+          {/* AI Settings Section */}
+          <div 
+            ref={(el) => { sectionRefs.current.ai = el; }}
+            className="py-8"
+          >
+            <div className="mb-8">
+              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
+                <Settings className="w-6 h-6" />
+                AI Settings
+              </h1>
+              <p className="text-muted-foreground mt-2">Configure your AI providers and models</p>
+            </div>
+            <AISettingsTab />
+          </div>
+
+          {/* Memory Section */}
+          <div 
+            ref={(el) => { sectionRefs.current.memory = el; }}
+            className="py-8"
+          >
+            <div className="mb-8">
+              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
+                <Database className="w-6 h-6" />
+                Memory
+              </h1>
+              <p className="text-muted-foreground mt-2">Manage memory and storage settings</p>
+            </div>
+            <MemoryTab />
+          </div>
+
+          {/* System Section */}
+          <div 
+            ref={(el) => { sectionRefs.current.system = el; }}
+            className="py-8 pb-20"
+          >
+            <div className="mb-8">
+              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
+                <Cpu className="w-6 h-6" />
+                System
+              </h1>
+              <p className="text-muted-foreground mt-2">System status and configuration</p>
+            </div>
+            <SystemTab />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function AISettingsTab() {

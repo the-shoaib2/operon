@@ -357,11 +357,7 @@ export const ChatLayout = React.memo(function ChatLayout({
     return null;
   }, [error, handleRetry]);
 
-  // Memoized message count display with shadcn typography
-  const messageCountDisplay = useMemo(() => (
-    <span className="text-sm text-muted-foreground">{messages.length} messages</span>
-  ), [messages.length]);
-
+  
   return (
     <ChatLayoutContainer className={cn("h-full", className)}>
       <ChatMain>
@@ -433,7 +429,7 @@ export const ChatLayout = React.memo(function ChatLayout({
           </ChatMessages>
 
           <ChatInputContainer>
-            <ChatStatusBar status={statusDisplay} messageCount={messageCountDisplay} />
+            <ChatStatusBar status={statusDisplay} />
             <ChatPromptInput
               input={input}
               setInput={setInput}

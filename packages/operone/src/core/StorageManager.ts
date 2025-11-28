@@ -3,22 +3,47 @@ import { EventBus } from './EventBus';
 
 // Conditional import for better-sqlite3 (Node.js only)
 let Database: any;
-try {
-  Database = require('better-sqlite3');
-} catch (error) {
-  console.warn('better-sqlite3 not available, StorageManager will not persist data');
+let dbLoadPromise: Promise<void> | null = null;
+
+async function loadDatabase() {
+  if (Database) return;
+  if (dbLoadPromise) return dbLoadPromise;
+  
+  dbLoadPromise = (async () => {
+    try {
+      // Use runtime import to avoid bundler interference
+      const importFn = new Function('specifier', 'return import(specifier)');
+      const module = await importFn('better-sqlite3');
+      Database = module.default;
+      console.log('✓ better-sqlite3 loaded successfully in StorageManager');
+    } catch (error) {
+      console.warn('better-sqlite3 not available, StorageManager will not persist data');
+    }
+  })();
+  
+  return dbLoadPromise;
 }
 
 export class StorageManager {
   private db: any;
   private eventBus: EventBus;
+  private initPromise: Promise<void>;
 
   constructor(dbPath: string = './operone-data.db') {
     this.eventBus = EventBus.getInstance();
+    this.initPromise = this.initializeAsync(dbPath);
+  }
 
-    if (Database) {
+  private async initializeAsync(dbPath: string): Promise<void> {
+    await loadDatabase();
+    
+    if (!Database) return;
+    
+    try {
       this.db = new Database(dbPath);
       this.initializeDatabase();
+    } catch (error) {
+      console.error('Failed to initialize SQLite database:', error);
     }
   }
 

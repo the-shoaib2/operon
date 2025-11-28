@@ -11,6 +11,7 @@
         "build": "vite build",
         "build:electron": "vite build && electron-builder",
         "preview": "vite preview",
+        "postinstall": "electron-rebuild -f -w better-sqlite3",
         "electron:dev": "concurrently \"vite\" \"wait-on -t 30000 http://localhost:5173 && electron .\"",
         "electron:dev-simple": "vite & sleep 5 && electron .",
         "electron:build": "vite build && electron-builder",
@@ -86,6 +87,7 @@
         "zod": "^3.25.76"
     },
     "devDependencies": {
+        "@electron/rebuild": "^4.0.1",
         "@playwright/test": "^1.56.1",
         "@repo/eslint-config": "workspace:*",
         "@repo/typescript-config": "workspace:*",
@@ -97,6 +99,7 @@
         "concurrently": "^9.1.2",
         "electron": "^34.0.0",
         "electron-builder": "^26.0.12",
+        "electron-rebuild": "^3.2.9",
         "eslint": "^9.39.1",
         "path-browserify": "^1.0.1",
         "postcss": "^8.5.6",

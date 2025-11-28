@@ -28,7 +28,7 @@ function MainLayoutContent({
     // On mobile: always show chat full width if has messages
 
     return (
-        <SidebarInset>
+        <SidebarInset className="h-screen overflow-hidden">
             <div className="h-full flex-1 overflow-hidden">
                 {!hasMessages || isMobile ? (
                     // No messages OR Mobile: Show only chat (full width)

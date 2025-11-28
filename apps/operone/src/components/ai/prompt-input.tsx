@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cn } from "@/lib/utils";
+import { AnimatedPlaceholder } from "@/components/ui/animated-placeholder";
 import type { ChatStatus, FileUIPart } from "ai";
 import {
   ArrowUpIcon,
@@ -787,6 +788,8 @@ export type PromptInputTextareaProps = ComponentProps<
   typeof InputGroupTextarea
 > & {
   onFocus?: () => void;
+  animatedPlaceholders?: string[];
+  placeholderInterval?: number;
 };
 
 export const PromptInputTextarea = ({
@@ -794,6 +797,8 @@ export const PromptInputTextarea = ({
   className,
   placeholder = "What would you like to know?",
   onFocus,
+  animatedPlaceholders,
+  placeholderInterval,
   ...props
 }: PromptInputTextareaProps) => {
   const controller = useOptionalPromptInputController();
@@ -871,6 +876,34 @@ export const PromptInputTextarea = ({
     : {
       onChange,
     };
+
+  if (animatedPlaceholders && animatedPlaceholders.length > 0) {
+    return (
+      <div className="relative">
+        <InputGroupTextarea
+          className={cn("resize-none min-h-16 max-h-48 overflow-y-auto", className)}
+          name="message"
+          onCompositionEnd={() => setIsComposing(false)}
+          onCompositionStart={() => setIsComposing(true)}
+          onFocus={onFocus}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          placeholder="" // Remove default placeholder
+          {...props}
+          {...controlledProps}
+        />
+        {!controlledProps?.value && (
+          <div className="absolute top-3 left-3 pointer-events-none">
+            <AnimatedPlaceholder 
+              placeholders={animatedPlaceholders}
+              interval={placeholderInterval}
+              className="text-sm"
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <InputGroupTextarea

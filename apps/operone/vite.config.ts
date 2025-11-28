@@ -19,7 +19,7 @@ export default defineConfig({
           build: {
             outDir: 'dist-electron',
             rollupOptions: {
-              external: ['electron', 'electron-store'],
+              external: ['electron', 'electron-store', 'better-sqlite3'],
               output: {
                 format: 'es',
               },

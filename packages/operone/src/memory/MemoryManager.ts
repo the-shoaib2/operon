@@ -3,11 +3,25 @@ import { EventBus } from '../core/EventBus';
 
 // Conditional import for better-sqlite3 (Node.js only)
 let Database: any;
-try {
-  Database = require('better-sqlite3');
-} catch (error) {
-  // better-sqlite3 not available (browser environment)
-  console.warn('better-sqlite3 not available, using browser memory manager');
+let dbLoadPromise: Promise<void> | null = null;
+
+async function loadDatabase() {
+  if (Database) return;
+  if (dbLoadPromise) return dbLoadPromise;
+  
+  dbLoadPromise = (async () => {
+    try {
+      // Use runtime import to avoid bundler interference
+      const importFn = new Function('specifier', 'return import(specifier)');
+      const module = await importFn('better-sqlite3');
+      Database = module.default;
+      console.log('✓ better-sqlite3 loaded successfully');
+    } catch (error) {
+      console.warn('better-sqlite3 not available, using browser memory manager');
+    }
+  })();
+  
+  return dbLoadPromise;
 }
 
 export interface MemoryEntry {
@@ -60,18 +74,29 @@ export class MemoryManager implements Memory {
   public session: SessionMemory;
   private readonly maxShortTermSize = 10;
   private eventBus: EventBus;
+  private initPromise: Promise<void>;
 
   constructor(dbPath: string = './operone-memory.db') {
     this.eventBus = EventBus.getInstance();
     this.session = new SessionMemory();
 
+    // Initialize database asynchronously
+    this.initPromise = this.initializeAsync(dbPath);
+  }
+
+  private async initializeAsync(dbPath: string): Promise<void> {
+    await loadDatabase();
+    
     if (!Database) {
-      // In browser/fallback mode, we might not have SQLite.
-      // For now, we just warn. In a real app, we'd use IndexedDB or similar.
       console.warn('MemoryManager running in non-SQLite environment.');
-    } else {
+      return;
+    }
+    
+    try {
       this.db = new Database(dbPath);
       this.initializeDatabase();
+    } catch (error) {
+      console.error('Failed to initialize SQLite database:', error);
     }
   }
 
@@ -91,6 +116,7 @@ export class MemoryManager implements Memory {
 
   public longTerm = {
     query: async (text: string): Promise<string[]> => {
+      await this.initPromise;
       if (!this.db) return [];
       const stmt = this.db.prepare(`
         SELECT content FROM long_term_memory 
@@ -104,6 +130,7 @@ export class MemoryManager implements Memory {
     },
 
     store: async (text: string): Promise<void> => {
+      await this.initPromise;
       if (!this.db) return;
       const stmt = this.db.prepare(`
         INSERT INTO long_term_memory (content, timestamp) 
@@ -115,6 +142,7 @@ export class MemoryManager implements Memory {
     },
 
     batchStore: async (entries: { content: string; metadata?: any }[]): Promise<void> => {
+      await this.initPromise;
       if (!this.db) return;
       const insert = this.db.prepare(`
         INSERT INTO long_term_memory (content, timestamp, metadata) 
