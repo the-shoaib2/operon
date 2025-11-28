@@ -28,11 +28,11 @@ function MainLayoutContent({
     // On mobile: always show chat full width if has messages
 
     return (
-        <SidebarInset className="h-screen overflow-hidden">
-            <div className="h-full flex-1 overflow-hidden">
+        <SidebarInset className="h-screen min-h-screen w-full overflow-hidden">
+            <div className="h-full min-h-full w-full flex-1 overflow-hidden">
                 {!hasMessages || isMobile ? (
                     // No messages OR Mobile: Show only chat (full width)
-                    <div className="h-full flex flex-col">
+                    <div className="h-full min-h-full w-full flex flex-col">
                         {children}
                     </div>
                 ) : (
@@ -44,7 +44,7 @@ function MainLayoutContent({
                                 sizes
                             )}`
                         }}
-                        className="h-full items-stretch"
+                        className="h-full min-h-full w-full items-stretch"
                     >
                         {/* Context Panel only when chatting (Activity removed) */}
                         {contextPanel && (
@@ -54,7 +54,7 @@ function MainLayoutContent({
                                     minSize={20}
                                     maxSize={40}
                                 >
-                                    <div className="h-full flex flex-col border-r bg-background/50 backdrop-blur-sm">
+                                    <div className="h-full min-h-full flex flex-col border-r bg-background/50 backdrop-blur-sm">
                                         <div className="flex-1 overflow-auto p-4">
                                             {contextPanel}
                                         </div>
@@ -69,7 +69,7 @@ function MainLayoutContent({
                             defaultSize={hasMessages && contextPanel ? 75 : 100}
                             minSize={60}
                         >
-                            <div className="h-full flex flex-col">
+                            <div className="h-full min-h-full flex flex-col">
                                 {children}
                             </div>
                         </ResizablePanel>

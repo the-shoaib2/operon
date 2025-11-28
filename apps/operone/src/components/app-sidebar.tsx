@@ -51,8 +51,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const width = window.innerWidth
     const height = window.innerHeight
     
-    // Auto-collapse if window hits minimum height (700px) or width (800px)
-    if ((width <= 800 || height <= 700) && state === "expanded" && !isMobile) {
+    // Auto-collapse if window hits minimum height (800px) or width (700px)
+    if ((width <= 700 || height <= 800) && state === "expanded" && !isMobile) {
       toggleSidebar()
     }
   }, [state, isMobile, toggleSidebar])

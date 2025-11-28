@@ -67,6 +67,8 @@ function createWindow() {
     mainWindow = new BrowserWindow({
       width: 1200,
       height: 800,
+      minWidth: 600,
+      minHeight: 700,
       webPreferences: {
         preload: path.join(__dirname, '../dist-electron/preload.cjs'),
         nodeIntegration: false,
@@ -369,8 +371,9 @@ function setupIPCHandlers() {
   ipcMain.handle('os:system:metrics', async () => {
     const cpus = os.cpus();
     const cpuUsage = cpus.reduce((acc: number, cpu: any) => {
-        const total = Object.values(cpu.times).reduce((a: any, b: any) => a + b, 0);
-        const idle = cpu.times.idle;
+        const times = cpu.times as { user: number; nice: number; sys: number; idle: number; irq: number };
+        const total = Object.values(times).reduce((a: number, b: number) => a + b, 0);
+        const idle = times.idle;
         return acc + ((total - idle) / total) * 100;
     }, 0) / cpus.length;
 
@@ -378,7 +381,7 @@ function setupIPCHandlers() {
       cpu: {
         usage: cpuUsage,
         count: cpus.length,
-        model: cpus[0].model
+        model: cpus[0]?.model || 'Unknown'
       },
       memory: {
         total: os.totalmem(),

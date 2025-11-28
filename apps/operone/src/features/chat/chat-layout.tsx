@@ -11,7 +11,7 @@ export interface ChatLayoutProps {
 }
 
 export const ChatLayout = ({ children, className }: ChatLayoutProps) => (
-  <div className={cn("flex flex-col h-screen max-h-screen overflow-hidden bg-background", className)}>
+  <div className={cn("flex flex-col h-screen max-h-screen min-h-screen overflow-hidden bg-background w-full", className)}>
     {children}
   </div>
 );
@@ -22,7 +22,7 @@ export interface ChatMainProps {
 }
 
 export const ChatMain = ({ children, className }: ChatMainProps) => (
-  <div className={cn("flex-1 flex overflow-hidden min-h-0 h-full", className)}>
+  <div className={cn("flex-1 flex overflow-hidden min-h-0 h-full w-full", className)}>
     {children}
   </div>
 );
@@ -33,7 +33,7 @@ export interface ChatContentProps {
 }
 
 export const ChatContent = ({ children, className }: ChatContentProps) => (
-  <div className={cn("flex-1 flex flex-col min-h-0 relative h-full", className)}>
+  <div className={cn("flex-1 flex flex-col min-h-0 relative h-full w-full", className)}>
     {children}
   </div>
 );

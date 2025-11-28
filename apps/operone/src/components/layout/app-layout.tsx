@@ -10,8 +10,8 @@ export function AppLayout({ children }: AppLayoutProps) {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <SidebarInset className="h-screen overflow-hidden">
-                <main className="flex-1 overflow-hidden">
+            <SidebarInset className="h-screen min-h-screen w-screen overflow-hidden">
+                <main className="flex-1 min-h-full overflow-hidden">
                     {children}
                 </main>
             </SidebarInset>
