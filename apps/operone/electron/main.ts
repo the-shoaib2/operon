@@ -54,7 +54,7 @@ function createWindow() {
       callback({
         responseHeaders: {
           ...details.responseHeaders,
-          'Content-Security-Policy': ["default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https: http: ws: wss:; font-src 'self' data:;"]
+          'Content-Security-Policy': ["default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; connect-src 'self' https: http: ws: wss:; font-src 'self' data:;"]
         }
       })
     })
@@ -65,6 +65,7 @@ function createWindow() {
     })
 
     mainWindow = new BrowserWindow({
+      title: 'Operone',
       width: 1200,
       height: 800,
       minWidth: 600,
@@ -93,7 +94,7 @@ function createWindow() {
           if (!document.querySelector('meta[http-equiv="Content-Security-Policy"]')) {
             const meta = document.createElement('meta');
             meta.httpEquiv = 'Content-Security-Policy';
-            meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https: http: ws: wss:; font-src 'self' data:;";
+            meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; connect-src 'self' https: http: ws: wss:; font-src 'self' data:;";
             document.head.appendChild(meta);
           }
         `)
@@ -217,34 +218,7 @@ function setupIPCHandlers() {
 
 // ... existing code ...
 
-  // Project Management
-  ipcMain.handle('project:create', async (_event, project: any) => {
-    const service = getStorageService()
-    service.createProject(project)
-    return project
-  })
 
-  ipcMain.handle('project:getAll', async () => {
-    const service = getStorageService()
-    return service.getAllProjects()
-  })
-
-  ipcMain.handle('project:getById', async (_event, id: string) => {
-    const service = getStorageService()
-    return service.getProject(id)
-  })
-
-  ipcMain.handle('project:update', async (_event, { id, updates }: { id: string; updates: any }) => {
-    const service = getStorageService()
-    service.updateProject(id, updates)
-    return service.getProject(id)
-  })
-
-  ipcMain.handle('project:delete', async (_event, id: string) => {
-    const service = getStorageService()
-    service.deleteProject(id)
-    return true
-  })
 
   // Chat Management
   ipcMain.handle('chat:create', async (_event, chat: any) => {
@@ -263,10 +237,7 @@ function setupIPCHandlers() {
     return service.getChat(chatId)
   })
 
-  ipcMain.handle('chat:getByProject', async (_event, projectId: string) => {
-    const service = getStorageService()
-    return service.getChatsByProject(projectId)
-  })
+
 
   ipcMain.handle('chat:update', async (_event, { id, updates }: { id: string; updates: any }) => {
     const service = getStorageService()

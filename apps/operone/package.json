@@ -8,8 +8,8 @@
     "main": "dist-electron/main.js",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "build:electron": "vite build && electron-builder",
+        "build": "node build-preload.mjs && vite build",
+        "build:electron": "node build-preload.mjs && vite build && electron-builder",
         "preview": "vite preview",
         "postinstall": "electron-rebuild -f -w better-sqlite3",
         "electron:dev": "concurrently \"vite\" \"wait-on -t 30000 http://localhost:5173 && electron .\"",
@@ -100,6 +100,7 @@
         "electron": "^34.0.0",
         "electron-builder": "^26.0.12",
         "electron-rebuild": "^3.2.9",
+        "esbuild": "^0.27.0",
         "eslint": "^9.39.1",
         "path-browserify": "^1.0.1",
         "postcss": "^8.5.6",
@@ -114,7 +115,7 @@
     },
     "build": {
         "appId": "com.operone.app",
-        "productName": "Operon",
+        "productName": "Operone",
         "mac": {
             "category": "public.app-category.productivity"
         },

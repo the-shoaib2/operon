@@ -11,26 +11,7 @@ class StorageService {
     this.storageManager = new StorageManager(dbPath);
   }
 
-  // Project Operations
-  createProject(project: any) {
-    return this.storageManager.createProject(project);
-  }
 
-  getProject(id: string) {
-    return this.storageManager.getProject(id);
-  }
-
-  getAllProjects() {
-    return this.storageManager.getAllProjects();
-  }
-
-  updateProject(id: string, updates: any) {
-    return this.storageManager.updateProject(id, updates);
-  }
-
-  deleteProject(id: string) {
-    return this.storageManager.deleteProject(id);
-  }
 
   // Chat Operations
   createChat(chat: any) {
@@ -41,9 +22,7 @@ class StorageService {
     return this.storageManager.getChat(id);
   }
 
-  getChatsByProject(projectId: string) {
-    return this.storageManager.getChatsByProject(projectId);
-  }
+
 
   getAllChats() {
     return this.storageManager.getAllChats();

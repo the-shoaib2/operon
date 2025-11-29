@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from '@/components'
 import { useAI } from '@/contexts/ai-context'
 import type { ProviderConfig, ProviderType, ModelInfo } from '@repo/types'
 import { BrowserAdapter } from '@repo/operone'
-import { Search, Settings, Database, Cpu, ChevronRight } from 'lucide-react'
+import { Search, Settings, Database, Cpu } from 'lucide-react'
 import { SystemStatus } from '@/components/system-status'
 import { cn } from '@/lib/utils'
 
@@ -27,7 +27,7 @@ interface SettingsSection {
 const settingsSections: SettingsSection[] = [
   {
     id: 'ai',
-    label: 'AI Settings',
+    label: 'AI',
     icon: <Settings className="w-4 h-4" />,
     description: 'Configure AI providers and models'
   },
@@ -115,54 +115,50 @@ export function UnifiedSettings() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      {/* Sidebar Navigation - Fixed height, no scroll */}
-      <div className="w-64 lg:w-72 border-r bg-muted/30 flex-col h-full hidden md:flex">
-        <div className="p-6 flex-shrink-0">
-          <h2 className="text-lg font-semibold tracking-tight mb-2">Settings</h2>
-          <p className="text-sm text-muted-foreground mb-6">Manage your application settings</p>
+    <div className="flex h-full bg-background overflow-hidden">
+      {/* Sidebar Navigation - Fixed height, scrollable */}
+      <div className="w-40 border-r bg-[hsl(var(--sidebar-background))] flex-col h-full md:flex hidden">
+        <div className="p-4 flex-shrink-0">
+          <h2 className="text-sm font-semibold tracking-tight">Settings</h2>
         </div>
         
-        <nav className="flex-1 px-6 pb-6 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-2 pb-2 space-y-1 overflow-y-auto">
           {settingsSections.map((section) => (
             <button
               key={section.id}
               onClick={() => scrollToSection(section.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
+                "w-full flex items-center px-2 py-1.5 text-xs rounded transition-colors relative",
                 activeTab === section.id
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-muted text-foreground font-medium"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
-              {section.icon}
-              <div className="flex-1 text-left">
-                <div className="font-medium">{section.label}</div>
-                <div className="text-xs opacity-70">{section.description}</div>
-              </div>
-              <ChevronRight className="w-4 h-4 opacity-50" />
+              {activeTab === section.id && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-blue-500 rounded-r-full" />
+              )}
+              <span className="flex-1 text-left pl-1">{section.label}</span>
             </button>
           ))}
         </nav>
       </div>
 
       {/* Mobile Navigation Dropdown */}
-      <div className="md:hidden w-full p-4 border-b bg-background">
+      <div className="md:hidden w-full p-3 border-b bg-background">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg font-semibold tracking-tight mb-3">Settings</h2>
-          <div className="flex flex-wrap gap-2">
+          <h2 className="text-sm font-semibold tracking-tight mb-2">Settings</h2>
+          <div className="flex flex-wrap gap-1">
             {settingsSections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors border",
+                  "flex items-center px-2 py-1 text-sm rounded transition-colors border",
                   activeTab === section.id
                     ? "bg-primary text-primary-foreground border-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted border-border"
                 )}
               >
-                {section.icon}
                 <span>{section.label}</span>
               </button>
             ))}
@@ -175,18 +171,17 @@ export function UnifiedSettings() {
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto h-full"
       >
-        <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-8">
+        <div className="p-3 md:p-4 max-w-4xl mx-auto space-y-6">
           {/* AI Settings Section */}
           <div 
             ref={(el) => { sectionRefs.current.ai = el; }}
-            className="py-8"
+            className="py-4"
           >
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
-                <Settings className="w-6 h-6" />
-                AI Settings
+            <div className="mb-4">
+              <h1 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                AI
               </h1>
-              <p className="text-muted-foreground mt-2">Configure your AI providers and models</p>
             </div>
             <AISettingsTab />
           </div>
@@ -194,14 +189,13 @@ export function UnifiedSettings() {
           {/* Memory Section */}
           <div 
             ref={(el) => { sectionRefs.current.memory = el; }}
-            className="py-8"
+            className="py-4"
           >
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
-                <Database className="w-6 h-6" />
+            <div className="mb-4">
+              <h1 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                <Database className="w-4 h-4" />
                 Memory
               </h1>
-              <p className="text-muted-foreground mt-2">Manage memory and storage settings</p>
             </div>
             <MemoryTab />
           </div>
@@ -209,14 +203,13 @@ export function UnifiedSettings() {
           {/* System Section */}
           <div 
             ref={(el) => { sectionRefs.current.system = el; }}
-            className="py-8 pb-20"
+            className="py-4 pb-12"
           >
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-3">
-                <Cpu className="w-6 h-6" />
+            <div className="mb-4">
+              <h1 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                <Cpu className="w-4 h-4" />
                 System
               </h1>
-              <p className="text-muted-foreground mt-2">System status and configuration</p>
             </div>
             <SystemTab />
           </div>

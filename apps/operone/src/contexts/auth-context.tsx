@@ -111,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Store user data via IPC
             if (window.electronAPI) {
+                console.log('AuthContext received user data:', userData)
                 await window.electronAPI.setUser(userData, token)
                 setUser(userData)
                 setIsNewLogin(true) // Mark as fresh login
