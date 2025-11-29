@@ -42,7 +42,7 @@ export function ThemeToggle() {
     }
 
     return (
-        <Button variant="ghost" size="icon" onClick={cycleTheme}>
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={cycleTheme}>
             {getThemeIcon()}
             <span className="sr-only">Toggle theme</span>
         </Button>

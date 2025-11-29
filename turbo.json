@@ -14,7 +14,9 @@
     "GITHUB_CLIENT_ID",
     "GITHUB_CLIENT_SECRET",
     "GOOGLE_CLIENT_ID",
-    "GOOGLE_CLIENT_SECRET"
+    "GOOGLE_CLIENT_SECRET",
+    "NODE_ENV",
+    "AUTH_DEBUG"
   ],
   "tasks": {
     "build": {

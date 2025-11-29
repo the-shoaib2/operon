@@ -16,68 +16,46 @@ export default function Header() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
-    
+
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    
+
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Show loading state while session is being fetched
-  if (status === 'loading') {
-    return (
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <nav className="container flex h-14 items-center max">
-          <div className="mr-4 hidden md:flex">
-            <Link href="/" className="mr-6 flex items-center space-x-2">
-              <Image src="/logo/passkey.svg" alt="Operone" width={24} height={24} className="h-6 w-6" />
-              <span className="hidden font-bold sm:inline-block">
-                Operone
-              </span>
-            </Link>
-            <div className="flex items-center space-x-6 text-sm font-medium">
-              <Link href="#features" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                Features
-              </Link>
-              <Link href="#pricing" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                Pricing
-              </Link>
-              <Link href="/docs" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                Docs
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-            <div className="w-full flex-1 md:w-auto md:flex-none">
-            </div>
-            <div className="flex items-center space-x-2">
-              <ThemeToggle />
-            
-            </div>
-          </div>
-        </nav>
-      </header>
-    )
-  }
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Image src="/logo/passkey.svg" alt="Operone" width={24} height={24} className="h-6 w-6" />
-            <span className="hidden font-bold sm:inline-block">
+          <Image src="/icons/operone-logo.svg" alt="Operone" width={48} height={48} className="h-8 w-8" />
+            <span className="hidden font-bold sm:inline-block uppercase">
               Operone
             </span>
           </Link>
-          <div className="flex items-center space-x-6 text-sm font-medium">
-            <Link href="#features" className="transition-colors hover:text-foreground/80 text-foreground/60">
+          <div className="flex items-center space-x-2 text-sm font-medium">
+            <Link
+              href="/download"
+              className="transition-colors hover:bg-muted px-3 py-1.5 rounded-full text-foreground/60 hover:text-foreground"
+            >
+              Download
+            </Link>
+            <Link
+              href="/features"
+              className="transition-colors hover:bg-muted px-3 py-1.5 rounded-full text-foreground/60 hover:text-foreground"
+            >
               Features
             </Link>
-            <Link href="#pricing" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link
+              href="/pricing"
+              className="transition-colors hover:bg-muted px-3 py-1.5 rounded-full text-foreground/60 hover:text-foreground"
+            >
               Pricing
             </Link>
-            <Link href="/docs" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link
+              href="/docs"
+              className="transition-colors hover:bg-muted px-3 py-1.5 rounded-full text-foreground/60 hover:text-foreground"
+            >
               Docs
             </Link>
           </div>
@@ -87,8 +65,13 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-2">
             <ThemeToggle />
-            {session ? (
-              <HeaderUser 
+            {status === 'loading' ? (
+              <>
+                <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
+                <div className="w-16 h-8 bg-muted rounded-full animate-pulse" />
+              </>
+            ) : session ? (
+              <HeaderUser
                 user={{
                   name: session.user?.name || "",
                   email: session.user?.email || "",
@@ -99,12 +82,12 @@ export default function Header() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="rounded-full hover:bg-muted">
                     Log in
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button size="sm">
+                  <Button size="sm" className="rounded-full">
                     Get Started
                   </Button>
                 </Link>
@@ -113,6 +96,7 @@ export default function Header() {
           </div>
         </div>
       </nav>
+      <div className="absolute bottom-0 left-0 right-0 h-5 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
     </header>
   )
 }
