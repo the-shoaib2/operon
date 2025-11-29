@@ -1167,7 +1167,7 @@ importers:
         version: link:../types
       chromadb:
         specifier: ^1.8.1
-        version: 1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@3.25.76))
+        version: 1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@4.1.12))
       faiss-node:
         specifier: ^0.5.1
         version: 0.5.1
@@ -1738,12 +1738,6 @@ packages:
   '@electron/get@2.0.3':
     resolution: {integrity: sha512-Qkzpg2s9GnVV2I2BjRksUi43U5e6+zaQMcjoJy0C+C5oxaKl+fmckGDQFtRpZpZV0NQekuZZ+tGz7EA9TVnQtQ==}
     engines: {node: '>=12'}
-
-  '@electron/node-gyp@https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2':
-    resolution: {tarball: https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2}
-    version: 10.2.0-electron.1
-    engines: {node: '>=12.13.0'}
-    hasBin: true
 
   '@electron/notarize@2.5.0':
     resolution: {integrity: sha512-jNT8nwH1f9X5GEITXaQ8IF/KdskvIkOFfB2CvwumsveVidzpSc+mvhhTMdAGSYF3O+Nq49lJ7y+ssODRXu06+A==}
@@ -8292,10 +8286,6 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
-  proc-log@2.0.1:
-    resolution: {integrity: sha512-Kcmo2FhfDTXdcbfDH76N7uBYHINxc/8GW7UAVuVP9I+Va3uHSerrnKV6dLooga/gh7GlgzuCCr/eoldnL1muGw==}
-    engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-
   proc-log@5.0.0:
     resolution: {integrity: sha512-Azwzvl90HaF0aCz1JrDdXQykFakSSNPaPoiZ9fm5qJIMHioDZEi7OAdRwSm6rSoPtY3Qutnm3L7ogmg3dc+wbQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -10729,22 +10719,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@electron/node-gyp@https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2':
-    dependencies:
-      env-paths: 2.2.1
-      exponential-backoff: 3.1.3
-      glob: 8.1.0
-      graceful-fs: 4.2.11
-      make-fetch-happen: 10.2.1
-      nopt: 6.0.0
-      proc-log: 2.0.1
-      semver: 7.7.3
-      tar: 6.2.1
-      which: 2.0.2
-    transitivePeerDependencies:
-      - bluebird
-      - supports-color
-
   '@electron/notarize@2.5.0':
     dependencies:
       debug: 4.4.3
@@ -10766,7 +10740,7 @@ snapshots:
 
   '@electron/rebuild@3.7.0':
     dependencies:
-      '@electron/node-gyp': https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2
+      '@electron/node-gyp': git+git@github.com:electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2
       '@malept/cross-spawn-promise': 2.0.0
       chalk: 4.1.2
       debug: 4.4.3
@@ -13448,7 +13422,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@22.15.3)(@vitest/ui@2.1.9)
+      vitest: 2.1.9(@types/node@20.19.25)(@vitest/ui@2.1.9)
 
   '@vitest/utils@2.1.9':
     dependencies:
@@ -14103,6 +14077,16 @@ snapshots:
       isomorphic-fetch: 3.0.0(encoding@0.1.13)
     optionalDependencies:
       openai: 4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@3.25.76)
+    transitivePeerDependencies:
+      - encoding
+    optional: true
+
+  chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@4.1.12)):
+    dependencies:
+      cliui: 8.0.1
+      isomorphic-fetch: 3.0.0(encoding@0.1.13)
+    optionalDependencies:
+      openai: 4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@4.1.12)
     transitivePeerDependencies:
       - encoding
 
@@ -17552,6 +17536,22 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  openai@4.104.0(encoding@0.1.13)(ws@8.17.1)(zod@4.1.12):
+    dependencies:
+      '@types/node': 18.19.130
+      '@types/node-fetch': 2.6.13
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0(encoding@0.1.13)
+    optionalDependencies:
+      ws: 8.17.1
+      zod: 4.1.12
+    transitivePeerDependencies:
+      - encoding
+    optional: true
+
   openapi-types@12.1.3: {}
 
   option@0.2.4: {}
@@ -17953,8 +17953,6 @@ snapshots:
       '@prisma/engines': 5.22.0
     optionalDependencies:
       fsevents: 2.3.3
-
-  proc-log@2.0.1: {}
 
   proc-log@5.0.0: {}
 
