@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation"
 import { InternalServerErrorCard, NotFoundErrorCard } from "./error-cards"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 
 export function InternalServerErrorPage() {
   const router = useRouter()
@@ -15,8 +17,11 @@ export function InternalServerErrorPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <InternalServerErrorCard
+    <div className="flex flex-col min-h-screen w-full">
+      <Header />
+      <main className="flex-1">
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <InternalServerErrorCard
         errorCode="500"
         timestamp={new Date().toISOString()}
         action={{
@@ -28,6 +33,9 @@ export function InternalServerErrorPage() {
           onClick: handleGoHome,
         }}
       />
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }
@@ -44,8 +52,11 @@ export function NotFoundPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <NotFoundErrorCard
+    <div className="flex flex-col min-h-screen w-full">
+      <Header />
+      <main className="flex-1">
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <NotFoundErrorCard
         resourceType="Page"
         action={{
           label: "Search",
@@ -56,6 +67,9 @@ export function NotFoundPage() {
           onClick: handleGoHome,
         }}
       />
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }
@@ -72,8 +86,11 @@ export function SearchNotFoundPage({ searchQuery }: { searchQuery: string }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <NotFoundErrorCard
+    <div className="flex flex-col min-h-screen w-full">
+      <Header />
+      <main className="flex-1">
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <NotFoundErrorCard
         resourceType="Results"
         searchQuery={searchQuery}
         action={{
@@ -85,6 +102,9 @@ export function SearchNotFoundPage({ searchQuery }: { searchQuery: string }) {
           onClick: handleGoHome,
         }}
       />
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }

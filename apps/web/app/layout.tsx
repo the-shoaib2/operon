@@ -40,7 +40,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {children}
+              <div className="max-w-7xl mx-auto w-full">
+                {children}
+              </div>
               <Toaster />
             </ThemeProvider>
           </SessionProviderWrapper>

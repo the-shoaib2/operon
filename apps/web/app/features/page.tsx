@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import FeaturesPage from '@/components/sections/features-page'
-import Header from '@/components/sections/header'
-import Footer from '@/components/sections/footer'
+import Header from '@/components/header'
+import Footer from '@/components/footer'
 
 export const metadata: Metadata = {
   title: 'Features - Operone',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function Features() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full">
       <Header />
       <main className="flex-1">
         <FeaturesPage />

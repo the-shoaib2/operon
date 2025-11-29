@@ -1,0 +1,45 @@
+name: Version Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changesets:
+    name: Check for Changesets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for changesets
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          
+          # Check if any package files were changed
+          if echo "$CHANGED_FILES" | grep -E "(apps/|packages/)" | grep -v -E "(test|spec|\.md$)" > /dev/null; then
+            # Check if changeset exists
+            if ! ls .changeset/*.md 2>/dev/null | grep -v README > /dev/null; then
+              echo "::error::No changeset found. Please run 'pnpm changeset:add' to create one."
+              exit 1
+            fi
+          fi
+
+      - name: Changeset Status
+        run: pnpm changeset:status --since=origin/${{ github.base_ref }}

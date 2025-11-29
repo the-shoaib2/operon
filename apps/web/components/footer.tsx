@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-3">
               <Image 
-                src="/logo/passkey.svg" 
+                src="/icons/operone-logo.svg" 
                 alt="Operone" 
                 width={32} 
                 height={32} 

@@ -122,7 +122,7 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <Card className="w-full border-none max-w-md mx-4">
+            <Card className="w-full border-none bg-transparent shadow-none max-w-md mx-4">
                 <CardHeader className="space-y-1">
                     <CardTitle className="text-2xl font-bold text-center">
                         Welcome to Operone
@@ -160,6 +160,9 @@ export default function LoginPage() {
                         )}
                     </Button>
 
+                {/* Not Implement Properly , API DOSE NOT WORKING */}
+
+                {/* 
                     <Button
                         onClick={handleGithubLogin}
                         disabled={isGithubLoading}
@@ -184,7 +187,9 @@ export default function LoginPage() {
                                 Continue with GitHub
                             </>
                         )}
-                    </Button>
+                    </Button> 
+                    
+                */}
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
   title: "Login - Operone",
@@ -14,10 +16,16 @@ export default function LoginLayout({
   children: React.ReactNode
 }) {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        {children}
-      </div>
-    </section>
+    <div className="flex flex-col min-h-screen w-full">
+      <Header />
+      <main className="flex-1">
+        <section className="min-h-screen flex items-center justify-center p-4">
+          <div className="w-full max-w-md mx-auto">
+            {children}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
   )
 }

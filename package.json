@@ -15,9 +15,18 @@
     "check-types": "turbo run check-types",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "changeset": "changeset",
+    "changeset:add": "changeset add",
+    "changeset:status": "changeset status",
+    "changeset:version": "changeset version && pnpm install --lockfile-only",
+    "changeset:publish": "changeset publish",
+    "version": "pnpm changeset:version",
+    "release": "pnpm build && pnpm changeset:publish",
+    "version:check": "changeset status --since=origin/main"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.7",
     "@vitest/coverage-v8": "^2.1.8",
     "@vitest/ui": "^2.1.8",
