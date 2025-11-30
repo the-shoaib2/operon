@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Loader2, Pencil, Trash2, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { PasskeyIcon } from '@/components/icons/passkey'
+import { PasskeyIcon } from '@/components/icons'
 import { startRegistration } from '@simplewebauthn/browser'
 
 interface Passkey {

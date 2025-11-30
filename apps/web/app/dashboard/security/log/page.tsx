@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Loader2, Shield, AlertTriangle, Check, X, Search, Download, Filter } from 'lucide-react'
+import { Loader2, Shield, AlertTriangle, Check, X, Search, Download } from 'lucide-react'
 
 interface SecurityLog {
     id: string
@@ -23,7 +23,6 @@ export default function SecurityLogPage() {
     const [loading, setLoading] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
     const [filter, setFilter] = useState<'all' | 'login' | 'security' | 'api' | 'suspicious'>('all')
-    const [severity, setSeverity] = useState<'all' | 'low' | 'medium' | 'high' | 'critical'>('all')
 
     // Security logs state - will be fetched from API
     const [logs, setLogs] = useState<SecurityLog[]>([])
@@ -106,27 +105,6 @@ export default function SecurityLogPage() {
         }
     }
 
-    const getSeverityBadge = (severity: SecurityLog['severity']) => {
-        const variants = {
-            low: 'secondary',
-            medium: 'default',
-            high: 'destructive',
-            critical: 'destructive'
-        } as const
-
-        const colors = {
-            low: 'text-gray-600',
-            medium: 'text-blue-600',
-            high: 'text-orange-600',
-            critical: 'text-red-600'
-        }
-
-        return (
-            <Badge variant={variants[severity]} className={`text-xs ${colors[severity]}`}>
-                {severity.charAt(0).toUpperCase() + severity.slice(1)}
-            </Badge>
-        )
-    }
 
     const getTypeBadge = (type: SecurityLog['type']) => {
         const colors = {
@@ -166,14 +144,9 @@ export default function SecurityLogPage() {
                     if (log.type !== 'api_access') return false
                     break
                 case 'suspicious':
-                    if (log.type !== 'suspicious' && log.severity === 'low') return false
+                    if (log.type !== 'suspicious') return false
                     break
             }
-        }
-
-        // Severity filter
-        if (severity !== 'all' && log.severity !== severity) {
-            return false
         }
 
         return true
@@ -232,18 +205,6 @@ export default function SecurityLogPage() {
                                             <SelectItem value="suspicious">Suspicious</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <Select value={severity} onValueChange={(value: 'all' | 'low' | 'medium' | 'high' | 'critical') => setSeverity(value)}>
-                                        <SelectTrigger className="w-32">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Severity</SelectItem>
-                                            <SelectItem value="low">Low</SelectItem>
-                                            <SelectItem value="medium">Medium</SelectItem>
-                                            <SelectItem value="high">High</SelectItem>
-                                            <SelectItem value="critical">Critical</SelectItem>
-                                        </SelectContent>
-                                    </Select>
                                 </div>
                             </div>
                         </div>
@@ -261,107 +222,70 @@ export default function SecurityLogPage() {
                                     </p>
                                 </div>
                             </div>
-                            <div className="rounded-md border">
+                            <div className="rounded-lg border shadow-sm bg-gradient-to-br from-background to-muted/20">
                                 {filteredLogs.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center p-8 text-center">
-                                        <Shield className="h-12 w-12 text-muted-foreground mb-4" />
-                                        <h3 className="text-lg font-semibold">No security events found</h3>
-                                        <p className="text-sm text-muted-foreground mt-2">
-                                            Try adjusting your filters or search terms
+                                    <div className="flex flex-col items-center justify-center p-12 text-center">
+                                        <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                                            <Shield className="h-8 w-8 text-muted-foreground" />
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">No security events found</h3>
+                                        <p className="text-sm text-muted-foreground max-w-md">
+                                            Try adjusting your filters or search terms to find security events
                                         </p>
                                     </div>
                                 ) : (
-                                    <div className="divide-y">
-                                        {filteredLogs.map((log) => (
-                                            <div key={log.id} className="p-4">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="mt-1">
-                                                        {getLogIcon(log.type)}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <h4 className="font-medium truncate">{log.description}</h4>
-                                                            {getTypeBadge(log.type)}
-                                                            {getSeverityBadge(log.severity)}
+                                    <div className="max-h-96 overflow-y-auto">
+                                        <div className="divide-y divide-border/50">
+                                            {filteredLogs.map((log, index) => (
+                                                <div 
+                                                    key={log.id} 
+                                                    className={`p-4 hover:bg-muted/30 transition-colors ${index === 0 ? 'border-t-0' : ''}`}
+                                                >
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="mt-1 flex-shrink-0">
+                                                            {getLogIcon(log.type)}
                                                         </div>
-                                                        <div className="space-y-1 text-sm text-muted-foreground">
-                                                            <div className="flex items-center gap-4">
-                                                                <span>
-                                                                    <strong>Time:</strong> {new Date(log.timestamp).toLocaleDateString('en-US', {
-                                                                        month: 'short',
-                                                                        day: 'numeric',
-                                                                        hour: '2-digit',
-                                                                        minute: '2-digit'
-                                                                    })}
-                                                                </span>
-                                                                <span>
-                                                                    <strong>IP:</strong> {log.ipAddress}
-                                                                </span>
-                                                                <span>
-                                                                    <strong>Location:</strong> {log.location}
-                                                                </span>
+                                                        <div className="flex-1 min-w-0 space-y-3">
+                                                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                                                <h4 className="font-medium text-base truncate flex-1">{log.description}</h4>
+                                                                <div className="flex items-center gap-2 flex-shrink-0">
+                                                                    {getTypeBadge(log.type)}
+                                                                </div>
                                                             </div>
-                                                            <div className="truncate">
-                                                                <strong>User Agent:</strong> {log.userAgent}
+                                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                                                    <span className="text-muted-foreground">Time:</span>
+                                                                    <span className="font-medium">
+                                                                        {new Date(log.timestamp).toLocaleDateString('en-US', {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit'
+                                                                        })}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                                                    <span className="text-muted-foreground">IP:</span>
+                                                                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded">{log.ipAddress}</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                                                                    <span className="text-muted-foreground">Location:</span>
+                                                                    <span className="font-medium">{log.location}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Statistics */}
-                        <div className="space-y-4">
-                            <div className="space-y-1">
-                                <h3 className="font-medium flex items-center gap-2">
-                                    <Filter className="h-5 w-5" />
-                                    Security Overview
-                                </h3>
-                                <p className="text-sm text-muted-foreground">Summary of recent security activity</p>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Check className="h-4 w-4 text-green-500" />
-                                        <h4 className="font-medium">Successful Logins</h4>
-                                    </div>
-                                    <p className="text-2xl font-bold text-green-600">
-                                        {logs.filter(l => l.type === 'login').length}
-                                    </p>
-                                </div>
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <X className="h-4 w-4 text-red-500" />
-                                        <h4 className="font-medium">Failed Logins</h4>
-                                    </div>
-                                    <p className="text-2xl font-bold text-red-600">
-                                        {logs.filter(l => l.type === 'failed_login').length}
-                                    </p>
-                                </div>
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <AlertTriangle className="h-4 w-4 text-orange-500" />
-                                        <h4 className="font-medium">Suspicious Activity</h4>
-                                    </div>
-                                    <p className="text-2xl font-bold text-orange-600">
-                                        {logs.filter(l => l.type === 'suspicious').length}
-                                    </p>
-                                </div>
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Shield className="h-4 w-4 text-blue-500" />
-                                        <h4 className="font-medium">Security Changes</h4>
-                                    </div>
-                                    <p className="text-2xl font-bold text-blue-600">
-                                        {logs.filter(l => ['password_change', '2fa_enabled', '2fa_disabled'].includes(l.type)).length}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </CardContent>
             </Card>

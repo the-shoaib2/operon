@@ -40,3 +40,10 @@ export {
   type HeartbeatConfig,
   type PeerHealth,
 } from './heartbeat';
+
+// New PeerNetwork infrastructure
+export { PeerNetwork } from './PeerNetwork';
+export type {
+  PeerNetworkConfig,
+  ConnectedPeer
+} from './PeerNetwork';

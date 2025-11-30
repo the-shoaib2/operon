@@ -29,6 +29,8 @@ import { reasoningEngine } from './reasoning';
 import { safetyEngine } from './safety';
 import { toolRouter } from './routing';
 import { outputEngine } from './output';
+import { mcpBroker } from '@operone/mcp';
+// import { memoryRecall, memoryStore } from '@operone/memory'; // Commented out - causes build issues with Vite/Rollup due to CommonJS/ESM incompatibility
 
 /**
  * Main Thinking Pipeline
@@ -494,9 +496,25 @@ export class ThinkingPipeline {
    * Retrieves relevant context from memory
    */
   private async retrieveMemoryContext(input: string, intent: Intent): Promise<any[]> {
-    // TODO: Implement actual memory retrieval
-    // This will be implemented in Phase 2
+    // Memory recall disabled due to build compatibility issues
+    console.warn('Memory recall is disabled in this build');
     return [];
+    
+    /* Original implementation:
+    try {
+      const query = {
+        query: input,
+        userId: this.config.userId,
+        sessionId: this.config.sessionId,
+        limit: 5,
+        minRelevance: 0.5,
+      };
+      return await memoryRecall.getRelevantContext(query);
+    } catch (error) {
+      console.error('Error retrieving memory context:', error);
+      return [];
+    }
+    */
   }
 
   /**
@@ -528,22 +546,32 @@ export class ThinkingPipeline {
         startData
       ));
       
-      // Simulate step execution (TODO: Implement actual tool execution)
-      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Execute tool via MCP Broker
+      let output: any;
+      try {
+        // Map tool types to MCP tool names if necessary, or ensure consistency
+        output = await mcpBroker.callTool(step.tool, step.parameters);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        output = { status: 'error', message: errorMessage };
+        // Don't throw here, let the pipeline continue or fail gracefully based on policy
+        // For now, we'll mark it as failed in the event
+      }
       
       // Emit step complete
       const completeData: StepExecutionData = {
         stepId: step.id,
         stepIndex: i,
         totalSteps,
-        status: 'complete',
+        status: output.status === 'error' ? 'failed' : 'complete',
         progress: ((i + 1) / totalSteps) * 100,
         description: step.description,
         tool: step.tool,
         startTime: stepStart,
         endTime: Date.now(),
         duration: Date.now() - stepStart,
-        output: { status: 'success', message: `Executed ${step.description}` },
+        output: output,
       };
       
       this.emit('step:complete', createPipelineEvent(
@@ -574,8 +602,32 @@ export class ThinkingPipeline {
     success: boolean,
     error?: string
   ): Promise<void> {
-    // TODO: Implement actual memory storage
-    // This will be implemented in Phase 2
+    // Memory storage disabled due to build compatibility issues
+    console.warn('Memory storage is disabled in this build');
+    
+    /* Original implementation:
+    try {
+      const taskResult = {
+        id: context.sessionId || nanoid(),
+        description: context.input,
+        input: context.input,
+        output: output?.content,
+        success,
+        steps: context.plan?.steps.map(s => s.id) || [],
+        executionTime: Date.now() - context.startTime,
+        timestamp: Date.now(),
+        userId: context.userId,
+        sessionId: context.sessionId,
+        metadata: {
+          error,
+          intent: context.intent?.category,
+        },
+      };
+      await memoryStore.saveTask(taskResult);
+    } catch (err) {
+      console.error('Error storing in memory:', err);
+    }
+    */
   }
 
   /**

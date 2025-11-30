@@ -1,42 +1,59 @@
 import { cn } from "@/lib/utils"
 import { Marquee } from "@/components/ui/marquee"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
 
 const reviews = [
   {
-    name: "Alex Chen",
-    username: "@alexchen",
-    body: "Operone transformed our development workflow. The monorepo setup saved us weeks of configuration time.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=alexchen",
+    name: "Rachel Martinez",
+    username: "@rachelm",
+    body: "Operone's agent system transformed our workflow. AI integration is seamless and powerful!",
+    img: "https://avatars.githubusercontent.com/u/75433?v=4",
   },
   {
-    name: "Sarah Williams",
-    username: "@sarahw",
-    body: "Best development platform I've used. The authentication system is rock-solid and the performance is incredible.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarahwilliams",
+    name: "James Wilson",
+    username: "@jwilson",
+    body: "Context management is brilliant. Handles complex state management effortlessly. Love it!",
+    img: "https://avatars.githubusercontent.com/u/293343?v=4",
   },
   {
-    name: "Marcus Johnson",
-    username: "@mjohnson",
-    body: "The TypeScript integration is seamless. Finally, a platform that understands modern development needs.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=marcusjohnson",
+    name: "Sophia Chen",
+    username: "@sophiach",
+    body: "Great platform, but learning curve was steep. Fantastic once past initial setup.",
+    img: "https://avatars.githubusercontent.com/u/624860?v=4",
   },
   {
-    name: "Emily Rodriguez",
-    username: "@emilyr",
-    body: "Deploying with Operone is a breeze. Zero-downtime deployments and excellent monitoring tools.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=emilyrodriguez",
+    name: "Michael Brown",
+    username: "@mbrown",
+    body: "Automation capabilities are incredible. Productivity increased by 40%. Game changer!",
+    img: "https://avatars.githubusercontent.com/u/149820?v=4",
   },
   {
-    name: "David Kim",
-    username: "@davidkim",
-    body: "The built-in CI/CD pipeline saved us thousands in DevOps costs. Highly recommend for any team.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=davidkim",
+    name: "Emma Thompson",
+    username: "@emmat",
+    body: "Initial configuration issues, but support was amazing. Works like a dream now!",
+    img: "https://avatars.githubusercontent.com/u/28929934?v=4",
   },
   {
-    name: "Lisa Thompson",
-    username: "@lisat",
-    body: "Outstanding developer experience. The hot reload and debugging tools are second to none.",
-    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=lisathompson",
+    name: "Daniel Kim",
+    username: "@dkim",
+    body: "Good tool, but needs better documentation. Powerful features once you figure them out.",
+    img: "https://avatars.githubusercontent.com/u/62455?v=4",
+  },
+  {
+    name: "Alex Johnson",
+    username: "@alexj",
+    body: "Terrible experience. Constant bugs and poor support. Wasted months. Avoid!",
+    img: "https://avatars.githubusercontent.com/u/8397654?v=4",
+  },
+  {
+    name: "Lisa Wang",
+    username: "@lisaw",
+    body: "Mixed feelings. AI features are revolutionary, but platform can be unstable.",
+    img: "https://avatars.githubusercontent.com/u/1234567?v=4",
   },
 ]
 
@@ -65,7 +82,10 @@ const ReviewCard = ({
       )}
     >
       <div className="flex flex-row items-center gap-2">
-        <img className="rounded-full" width="32" height="32" alt="" src={img} />
+        <Avatar>
+          <AvatarImage src={img} alt={`${name} profile picture`} loading="lazy" />
+          <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <figcaption className="text-sm font-medium dark:text-white">
             {name}
@@ -80,7 +100,7 @@ const ReviewCard = ({
 
 export function ReviewSection() {
   return (
-    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden py-10">
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.username} {...review} />

@@ -2,7 +2,7 @@ export interface Agent {
   id: string;
   name: string;
   role: 'os' | 'assistant';
-  think(input: string, options?: any): Promise<string>;
+  think(input: string, options?: unknown): Promise<string>;
   act(action: string): Promise<void>;
   observe(): Promise<string>;
 }
@@ -18,7 +18,7 @@ export interface Memory {
 export interface MCPTool {
   name: string;
   description: string;
-  execute(args: Record<string, any>): Promise<any>;
+  execute(args: Record<string, unknown>): Promise<unknown>;
 }
 
 // AI Provider Types
@@ -114,8 +114,8 @@ export interface ToolCall {
   id: string;
   type: string;
   state: 'input-streaming' | 'input-available' | 'approval-requested' | 'approval-responded' | 'output-available' | 'output-error' | 'output-denied';
-  input?: any;
-  output?: any;
+  input?: unknown;
+  output?: unknown;
   errorText?: string;
 }
 
@@ -138,7 +138,7 @@ export interface ChatMessage {
   // Enhanced fields for rich content
   toolCalls?: ToolCall[];
   artifacts?: Artifact[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface AIServiceConfig {

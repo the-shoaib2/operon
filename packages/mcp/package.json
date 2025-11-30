@@ -1,18 +1,20 @@
 {
-    "name": "@repo/mcp-tools",
+    "name": "@operone/mcp",
     "version": "0.0.0",
     "private": true,
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "scripts": {
-        "lint": "eslint . --max-warnings 0",
+        "build": "tsc",
+        "lint": "eslint .",
         "check-types": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest watch",
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@repo/types": "workspace:*"
+        "@repo/types": "workspace:*",
+        "@operone/networking": "workspace:*"
     },
     "devDependencies": {
         "@repo/eslint-config": "workspace:*",

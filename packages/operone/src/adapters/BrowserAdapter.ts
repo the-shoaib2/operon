@@ -385,7 +385,9 @@ export class BrowserAIService {
 
     const models = await this.ollamaDetector.getAvailableModels();
     if (models.length > 0) {
+    if (models.length > 0) {
       this.activeModel = models[0].name;
+    }
     }
   }
 

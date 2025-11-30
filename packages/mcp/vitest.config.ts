@@ -5,7 +5,7 @@ export default defineConfig({
   ...baseConfig,
   test: {
     ...baseConfig.test,
-    name: '@repo/mcp-tools',
+    name: '@operone/mcp',
     environment: 'node',
   },
 });

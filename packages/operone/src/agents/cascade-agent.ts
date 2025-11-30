@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { ThinkingPipeline, PipelineResult, PipelineConfig } from '@operone/thinking';
-import { ToolRegistry, toolRegistry } from './core/tool-registry';
-import { ToolExecutor, createToolExecutor, ExecutionResult } from './core/tool-executor';
+import { ToolRegistry, toolRegistry } from '../core/tool-registry';
+import { ToolExecutor, createToolExecutor, ExecutionResult } from '../core/tool-executor';
 import { memoryRecall, memoryStore } from '@operone/memory';
 
 /**
@@ -15,6 +15,9 @@ export interface CascadeAgentConfig extends PipelineConfig {
   toolRegistry?: ToolRegistry;
   cacheDuration?: number;
   autoRegisterTools?: boolean;
+  enableMemory?: boolean;
+  userId?: string;
+  sessionId?: string;
 }
 
 export class CascadeAgent extends EventEmitter {
@@ -156,6 +159,7 @@ export class CascadeAgent extends EventEmitter {
 
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
+      if (!result) continue;
       
       formatted += `### Result ${i + 1}\n\n`;
       
@@ -216,11 +220,11 @@ export class CascadeAgent extends EventEmitter {
    */
   private setupEventForwarding(): void {
     // Forward tool executor events
-    this.toolExecutor.on('executed', (data) => {
+    this.toolExecutor.on('executed', (data: any) => {
       this.emit('tool-executed', data);
     });
 
-    this.toolExecutor.on('retry', (data) => {
+    this.toolExecutor.on('retry', (data: any) => {
       this.emit('tool-retry', data);
     });
   }

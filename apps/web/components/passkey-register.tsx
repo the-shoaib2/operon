@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { PasskeyIcon } from './icons/passkey'
+import { PasskeyIcon } from '@/components/icons'
 
 export function PasskeyRegister() {
     const [isLoading, setIsLoading] = useState(false)

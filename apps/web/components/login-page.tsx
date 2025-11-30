@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { signIn, useSession } from 'next-auth/react'
-import { PasskeyIcon } from '@/components/icons/passkey'
+import { PasskeyIcon } from '@/components/icons'
 import { toast } from 'sonner'
 
 export default function LoginPage() {

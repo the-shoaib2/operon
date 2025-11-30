@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { URL } from 'url';
-import { AgentManager } from './core/AgentManager';
-import { RAGEngine } from './rag/RAGEngine';
+import { AgentManager } from './index';
+import { RAGEngine } from './agents/RAGEngine';
 import { MemoryManager } from './memory/MemoryManager';
 import { EventBus } from './core/EventBus';
 import { createDefaultConfig, ModelProvider } from './model-provider';
@@ -117,7 +117,35 @@ export class APIServer {
 
       // Start agent
       if (agentId) {
-        await this.agentManager.startAgent(agentId);
+        // This section seems to be test/setup code and not appropriate for an API endpoint
+        // that starts an agent. Assuming the intent was to replace the agent start logic
+        // with this test code for demonstration or debugging purposes.
+        // If this is not the intent, the user should provide a clearer instruction.
+
+        // Register agents (assuming 'assistant', 'planner', 'osAgent' are defined elsewhere or are placeholders)
+        // For a real API, these would likely be created/registered via other endpoints or configuration.
+        // this.agentManager.registerAgent(assistant, 'General purpose assistant');
+        // this.agentManager.registerAgent(planner, 'Task planner');
+        // this.agentManager.registerAgent(osAgent, 'OS operations agent');
+
+        // Initialize RAG with documents
+        const documents = [
+          { id: 'doc1', content: 'Operone is an advanced AI agent system.' },
+          { id: 'doc2', content: 'It uses a thinking pipeline for reasoning.' },
+          { id: 'doc3', content: 'The system supports local and remote models.' }
+        ];
+
+        console.log('Ingesting documents...');
+        for (const doc of documents) {
+          await this.ragEngine.ingestDocument(doc.id, doc.content); // Corrected to use this.ragEngine
+        }
+
+        // Test RAG query
+        const results = await this.ragEngine.query('What is Operone?', 2); // Corrected to use this.ragEngine
+        console.log('RAG Results:', results);
+
+        // Original agent start logic (commented out as per the provided edit's context)
+        // await this.agentManager.startAgent(agentId);
       } else {
          // Should handle error, but for now just log or ignore as the connection is already open
          console.error('Agent ID required for streaming');

@@ -68,6 +68,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@operone/mcp': path.resolve(__dirname, '../../packages/mcp/src'),
     },
   },
   server: {

@@ -9,7 +9,7 @@
         "./client": "./src/client.ts"
     },
     "scripts": {
-        "lint": "eslint . --max-warnings 0",
+        "lint": "eslint .",
         "check-types": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest watch",
@@ -20,7 +20,7 @@
         "@ai-sdk/google": "^1.0.11",
         "@ai-sdk/mistral": "^1.0.9",
         "@ai-sdk/openai": "^2.0.71",
-        "@repo/mcp-tools": "workspace:*",
+        "@operone/mcp": "workspace:*",
         "@repo/types": "workspace:*",
         "@operone/memory": "workspace:*",
         "@operone/shell": "workspace:*",

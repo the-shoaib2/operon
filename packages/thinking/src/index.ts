@@ -14,7 +14,7 @@ export { toolRouter, createToolRouter, ToolRouter } from './routing';
 export { outputEngine, createOutputEngine, OutputEngine } from './output';
 
 // Main Pipeline Orchestrator
-export { ThinkingPipeline, createThinkingPipeline } from './pipeline';
+export { ThinkingPipeline, createThinkingPipeline, PipelineConfig } from './pipeline';
 
 // Legacy exports (for backward compatibility)
 export { DependencyGraph } from './DependencyGraph';

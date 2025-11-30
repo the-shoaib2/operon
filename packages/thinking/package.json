@@ -18,6 +18,7 @@
         "@operone/shell": "workspace:*",
         "@operone/networking": "workspace:*",
         "@operone/ai": "workspace:*",
+        "@operone/mcp": "workspace:*",
         "graphlib": "^2.1.8",
         "zod": "^3.23.8",
         "nanoid": "^5.0.4"

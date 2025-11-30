@@ -18,8 +18,8 @@ describe('@repo/types', () => {
         id: 'test-agent',
         name: 'Test Agent',
         role: 'os',
-        think: async (input: string) => 'thinking...',
-        act: async (action: string) => {},
+        think: async (_input: string) => 'thinking...',
+        act: async (_action: string) => {},
         observe: async () => 'observing...',
       };
       
@@ -31,8 +31,8 @@ describe('@repo/types', () => {
       const memory: Memory = {
         shortTerm: ['memory1', 'memory2'],
         longTerm: {
-          query: async (text: string) => ['result1'],
-          store: async (text: string) => {},
+          query: async (_text: string) => ['result1'],
+          store: async (_text: string) => {},
         },
       };
       
@@ -44,7 +44,7 @@ describe('@repo/types', () => {
       const tool: MCPTool = {
         name: 'test-tool',
         description: 'A test tool',
-        execute: async (args: Record<string, any>) => ({ success: true }),
+        execute: async (_args: Record<string, unknown>) => ({ success: true }),
       };
       
       expect(tool.name).toBe('test-tool');

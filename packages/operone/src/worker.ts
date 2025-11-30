@@ -1,5 +1,5 @@
 import { parentPort, workerData } from 'worker_threads';
-import { AgentManager } from './core/AgentManager';
+import { AgentManager } from './index';
 import { EventBus } from './core/EventBus';
 
 // Initialize core systems in the worker

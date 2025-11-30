@@ -2,6 +2,8 @@ import Header from "@/components/header"
 import HeroSection from "@/components/sections/hero-section"
 import AppNameSection from "@/components/sections/app-name-section"
 import FeaturesSection from "@/components/sections/features-section"
+import AnimatedBeamSection from "@/components/sections/animated-beam-section"
+// import TextRevealSection from "@/components/sections/text-reveal-section"
 import { ReviewSection } from "@/components/sections/review-section"
 import Footer from "@/components/footer"
 
@@ -12,6 +14,7 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <FeaturesSection />
+        <AnimatedBeamSection />
         <ReviewSection />
         <AppNameSection />
       </main>
