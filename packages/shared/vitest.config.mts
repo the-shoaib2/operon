@@ -8,5 +8,8 @@ export default defineConfig({
     include: ['**/*.test.ts'],
     name: '@operone/shared',
     environment: 'node',
+    pool: 'threads',
+    minThreads: 1,
+    maxThreads: 1,
   },
 });

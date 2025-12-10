@@ -7,5 +7,8 @@ export default defineConfig({
     ...baseConfig.test, include: ['**/*.test.ts'],
     name: '@operone/db',
     environment: 'node',
+    pool: 'threads',
+    minThreads: 1,
+    maxThreads: 1,
   },
 });

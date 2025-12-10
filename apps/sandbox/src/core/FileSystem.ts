@@ -17,14 +17,18 @@ export class FileSystem {
     return this.files.get(path) || null;
   }
 
+  deleteFile(path: string): boolean {
+    return this.files.delete(path);
+  }
+
   ls(path: string): string[] {
     // Simple filter for simulation
     const results: string[] = [];
     // If path is root '/'
     if (path === '/') {
-       return Array.from(this.directories).map(d => d.replace('/', ''))
+      return Array.from(this.directories).map(d => d.replace('/', ''))
     }
-    
+
     // Check virtual directories
     for (const [filePath] of this.files) {
       if (filePath.startsWith(path)) {

@@ -25,7 +25,7 @@ export const PCDashboard = () => {
                     <h1 className="text-2xl font-bold">{selectedPC.hostname}</h1>
                     <p className="text-sm text-gray-400 font-mono">{selectedPC.ip} | {selectedPC.id}</p>
                 </div>
-                <div className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold border border-green-500/30">
+                <div className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30">
                     ONLINE
                 </div>
             </div>
@@ -36,7 +36,7 @@ export const PCDashboard = () => {
                 <div className="w-1/3 p-4 border-r border-gray-800 overflow-y-auto bg-gray-900/50">
                     <div className="mb-6">
                         <h3 className="text-xs uppercase tracking-wider text-gray-500 mb-3 font-bold">FileSystem</h3>
-                        <div className="bg-black/50 rounded-md p-3 font-mono text-xs text-gray-400">
+                        <div className="bg-black/50 p-3 font-mono text-xs text-gray-400">
                             {selectedPC.fs.ls('/').map(f => (
                                 <div key={f} className="mb-1 flex items-center gap-2">
                                     <span>📄</span> {f}
@@ -49,7 +49,7 @@ export const PCDashboard = () => {
                         <h3 className="text-xs uppercase tracking-wider text-gray-500 mb-3 font-bold">Available MCP Tools</h3>
                         <div className="space-y-2">
                             {tools.map(tool => (
-                                <div key={tool.name} className="p-3 bg-gray-800 rounded-md border border-gray-700 hover:border-gray-600 transition-colors">
+                                <div key={tool.name} className="p-3 bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors">
                                     <div className="font-mono text-sm font-bold text-blue-400">{tool.name}</div>
                                     <div className="text-xs text-gray-400 mt-1">{tool.description}</div>
                                 </div>

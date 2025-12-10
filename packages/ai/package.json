@@ -15,6 +15,7 @@
         "@llama-node/llama-cpp": "^0.1.6",
         "@ai-sdk/provider": "^1.0.0",
         "@operone/core": "workspace:*",
+        "@operone/mcp": "workspace:*",
         "@repo/types": "workspace:*",
         "onnxruntime-node": "^1.23.2"
     },

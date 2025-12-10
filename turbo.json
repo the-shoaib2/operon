@@ -24,6 +24,12 @@
     "NEXT_PUBLIC_GITHUB_REPO_OWNER",
     "NEXT_PUBLIC_GITHUB_REPO_NAME"
   ],
+  "globalPassThroughEnv": [
+    "PATH",
+    "USER",
+    "HOME",
+    "SHELL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": [

@@ -2,9 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
+@layer base {
+  :root {
+    --color-dark-bg: #0d1117;
+    --color-dark-text: #c9d1d9;
+    --color-gray-900: #161b22;
+    --color-gray-800: #21262d;
+  }
+}
+
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
-  background-color: #0d1117; /* Dark theme background */
-  color: #c9d1d9;
+  background-color: var(--color-dark-bg);
+  color: var(--color-dark-text);
 }

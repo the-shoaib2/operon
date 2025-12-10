@@ -73,7 +73,7 @@ export class AIFunctionCaller {
 # AVAILABLE TOOLS
 You have access to the following tools. To use them, output a function call in the format: call_tool("tool_name", {arg: "value"})
 
-${tools.map(t => `
+${tools.map((t: any) => `
 ## ${t.name}
 ${t.description}
 Parameters: ${JSON.stringify(t.parameters)}

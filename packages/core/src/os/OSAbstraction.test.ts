@@ -84,7 +84,7 @@ describe('OSAbstraction', () => {
       const separator = osAbstraction.getPathSeparator();
       
       if (osAbstraction.isWindows()) {
-        expect(separator).toBe('\\\\');
+        expect(separator).toBe('\\');
       } else {
         expect(separator).toBe('/');
       }
