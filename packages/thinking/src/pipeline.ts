@@ -394,6 +394,7 @@ export class ThinkingPipeline {
       
       const output = await outputEngine.format({
         content: executionResult,
+        format: 'markdown',
         metadata: {
           executionMode: routing.executionMode,
           stepsCount: context.plan.steps.length,

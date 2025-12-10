@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { PeerNetwork } from '@operone/networking/src/peer/PeerNetwork';
 import { MCPBroker } from '@operone/mcp/src/Broker';
 import { FileSystemTool } from '@operone/fs/src/FileSystemTool';
@@ -21,11 +21,11 @@ interface PCInstance {
 const BASE_PORT = 9000;
 const NUM_WORKERS = 4;
 
-test.describe('Multi-PC Orchestration E2E', () => {
+describe('Multi-PC Orchestration E2E', () => {
   let hostPC: PCInstance;
   let workerPCs: PCInstance[] = [];
 
-  test.beforeAll(async () => {
+  beforeAll(async () => {
     // Initialize Host PC
     hostPC = await initializePC('host', 'Host PC', BASE_PORT);
 
@@ -61,7 +61,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
   });
 
-  test.afterAll(async () => {
+  afterAll(async () => {
     // Cleanup all PCs
     await hostPC.peerNetwork.stop();
     for (const worker of workerPCs) {
@@ -69,7 +69,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     }
   });
 
-  test('should establish connections between all 5 PCs', async () => {
+  it('should establish connections between all 5 PCs', async () => {
     const connectedPeers = hostPC.peerNetwork.getConnectedPeers();
     expect(connectedPeers.length).toBe(NUM_WORKERS);
     
@@ -80,7 +80,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     }
   });
 
-  test('host should discover tools from all worker PCs', async () => {
+  it('host should discover tools from all worker PCs', async () => {
     const allTools = await hostPC.broker.discoverTools(true);
     
     // Should have local tools + remote tools from 4 workers
@@ -93,7 +93,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     expect(remoteTools.length).toBe(NUM_WORKERS * 2);
   });
 
-  test('host should distribute file operations across workers', async () => {
+  it('host should distribute file operations across workers', async () => {
     const peers = hostPC.broker.getPeers();
     expect(peers.length).toBe(NUM_WORKERS);
     
@@ -111,7 +111,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     expect(updatedPeers[3].load).toBe(80);
   });
 
-  test('host should handle worker disconnection gracefully', async () => {
+  it('host should handle worker disconnection gracefully', async () => {
     // Disconnect worker-1
     const worker1 = workerPCs[0];
     await worker1.peerNetwork.stop();
@@ -148,7 +148,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     expect(reconnectedPeers.length).toBe(NUM_WORKERS);
   });
 
-  test('host should broadcast tool updates to all workers', async () => {
+  it('host should broadcast tool updates to all workers', async () => {
     const broadcastEvents: any[] = [];
     
     // Listen for broadcast events on host
@@ -175,7 +175,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     expect(broadcastEvents[0].action).toBe('registered');
   });
 
-  test('host should monitor heartbeats from all workers', async ({ page }) => {
+  it('host should monitor heartbeats from all workers', async () => {
     // This test verifies the heartbeat mechanism
     // Heartbeats are sent every 30 seconds, so we'll check the lastSeen timestamps
     
@@ -188,7 +188,7 @@ test.describe('Multi-PC Orchestration E2E', () => {
     }
   });
 
-  test('host should execute distributed pipeline across all workers', async () => {
+  it('host should execute distributed pipeline across all workers', async () => {
     // Simulate a distributed task that uses multiple workers
     const tasks = [
       { workerId: 'worker-1', tool: 'shell', command: 'echo "Task 1"' },

@@ -1,35 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { SimulationProvider } from './context/SimulationContext';
+import { NetworkMap } from './components/NetworkMap';
+import { PCDashboard } from './components/PCDashboard';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <SimulationProvider>
+      <div className="flex h-screen w-screen bg-black overflow-hidden">
+        {/* Left Sidebar: Network Map */}
+        <div className="w-80 flex-shrink-0 h-full border-r border-gray-800 bg-gray-900">
+          <NetworkMap />
+        </div>
+
+        {/* Main Content: PC Dashboard */}
+        <div className="flex-1 h-full relative">
+          <PCDashboard />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </SimulationProvider>
+  );
 }
 
-export default App
+export default App;

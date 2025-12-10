@@ -19,27 +19,27 @@ const INTENT_PATTERNS: IntentPattern[] = [
   {
     category: 'file_read',
     keywords: ['read', 'show', 'display', 'view', 'open', 'cat', 'see', 'check'],
-    patterns: [/read\s+file/, /show\s+(?:me\s+)?(?:the\s+)?file/, /view\s+.*\.[\w]+/],
+    patterns: [/read\s+/, /show\s+/, /view\s+/],
     weight: 1.0,
   },
   {
     category: 'file_write',
     keywords: ['write', 'create', 'save', 'update', 'modify', 'edit', 'change'],
-    patterns: [/create\s+(?:a\s+)?file/, /write\s+to/, /save\s+(?:to\s+)?file/],
+    patterns: [/create\s+/, /write\s+/, /save\s+/],
     weight: 1.0,
   },
   {
     category: 'file_search',
     keywords: ['find', 'search', 'locate', 'grep', 'look for'],
-    patterns: [/find\s+files?/, /search\s+for/, /grep\s+/],
+    patterns: [/find\s+/, /search\s+/, /grep\s+/],
     weight: 1.0,
   },
 
   // Shell Commands
   {
     category: 'shell_command',
-    keywords: ['run', 'execute', 'command', 'terminal', 'bash', 'shell', 'npm', 'git'],
-    patterns: [/run\s+(?:the\s+)?command/, /execute\s+/, /npm\s+/, /git\s+/],
+    keywords: ['run', 'execute', 'command', 'terminal', 'bash', 'shell', 'npm', 'git', 'rm', 'ls', 'cd', 'delete'],
+    patterns: [/run\s+/, /execute\s+/, /npm\s+/, /git\s+/, /rm\s+/],
     weight: 1.0,
   },
 
@@ -188,6 +188,7 @@ export class IntentEngine {
     const filePaths = input.match(/(?:\/[\w.-]+)+|(?:\\[\w.-]+)+|[\w.-]+\.[\w]+/g);
     if (filePaths) {
       entities.paths = filePaths; // Use 'paths' to match test expectations
+      entities.filePaths = filePaths;
     }
 
     // URLs

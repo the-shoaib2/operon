@@ -49,8 +49,8 @@ describe('ShortTermMemory', () => {
       expect(memory.has('non-existent')).toBe(false);
     });
 
-    it('should return true even for undefined values', () => {
-      memory.set('key1', undefined);
+    it('should return true even for null values', () => {
+      memory.set('key1', null);
       expect(memory.has('key1')).toBe(true);
     });
   });
