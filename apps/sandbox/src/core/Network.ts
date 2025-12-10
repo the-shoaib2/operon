@@ -7,20 +7,14 @@ export class Network {
   constructor(initialCount: number = 10) {
     for (let i = 1; i <= initialCount; i++) {
       const ip = `${this.subnet}${i + 10}`; // start at .11
-      const hostname = `node-${i.toString().padStart(2, '0')}`;
+      // Convert 1->A, 2->B, etc.
+      const hostname = String.fromCharCode(64 + i);
       const id = crypto.randomUUID();
       const pc = new PC(id, hostname, ip);
       this.pcs.set(id, pc);
       
-      // Customize a few
-      if (i === 1) {
-        pc.hostname = 'gateway-primary';
-        pc.fs.writeFile('/etc/config', 'ROLE=GATEWAY');
-      }
-      if (i === 10) {
-        pc.hostname = 'db-server';
-        pc.fs.writeFile('/var/data.db', 'BINARY_DATA');
-      }
+      // Basic role for first node just to have some variety if needed, 
+      // but user asked for specific names. keeping simple for now.
     }
   }
 

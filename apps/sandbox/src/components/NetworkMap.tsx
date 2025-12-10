@@ -46,15 +46,16 @@ export const NetworkMap = ({ topology = 'ring' }: NetworkMapProps) => {
         },
         position,
         style: {
-          padding: 12,
-          borderWidth: 2,
+          padding: 8,
+          borderRadius: 0,
+          borderWidth: 1,
           borderStyle: 'solid',
-          borderColor: isSelected ? '#3b82f6' : '#374151',
-          backgroundColor: isSelected ? '#1e3a8a' : '#111827',
-          color: '#e5e7eb',
+          borderColor: isSelected ? '#3b82f6' : '#2a2a2a',
+          backgroundColor: isSelected ? '#3b82f620' : '#121212',
+          color: '#e5e5e5',
           boxShadow: isSelected
-            ? '0 0 0 2px rgba(59,130,246,0.8), 0 0 16px rgba(59,130,246,0.6)'
-            : '0 0 0 1px rgba(31,41,55,1)',
+            ? '0 0 0 1px #3b82f6'
+            : 'none',
         },
       } satisfies Node;
     });
@@ -90,10 +91,10 @@ export const NetworkMap = ({ topology = 'ring' }: NetworkMapProps) => {
   );
 
   return (
-    <div className="h-full w-full bg-gray-900 flex flex-col">
-      <div className="p-4 border-b border-gray-800">
-        <h2 className="text-xl font-bold text-white">Network Topology</h2>
-        <p className="text-xs text-gray-400 mt-1">
+    <div className="h-full w-full bg-dark-bg flex flex-col">
+      <div className="p-2 border-b border-dark-border">
+        <h2 className="text-lg font-bold text-white">Network Topology</h2>
+        <p className="text-[10px] text-dark-muted mt-0.5">
           {topology.charAt(0).toUpperCase() + topology.slice(1)} topology • {pcs.length} nodes
         </p>
       </div>
@@ -108,12 +109,12 @@ export const NetworkMap = ({ topology = 'ring' }: NetworkMapProps) => {
           fitViewOptions={{ padding: 0.2 }}
         >
           <MiniMap
-            nodeStrokeColor="#4b5563"
-            nodeColor="#111827"
-            maskColor="rgba(17,24,39,0.7)"
+            nodeStrokeColor="#2a2a2a" // dark-border
+            nodeColor="#121212" // dark-surface
+            maskColor="rgba(10,10,10,0.7)" // dark-bg
           />
           <Controls />
-          <Background color="#1f2937" gap={16} />
+          <Background color="#2a2a2a" gap={16} />
         </ReactFlow>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { LLama, ModelLoad, Generate, InferenceResult, InferenceResultType } from '@llama-node/llama-cpp';
 import * as fs from 'fs';
+import { ModelProvider, ModelOptions } from './types';
 
 export interface ModelConfig {
   path: string;
@@ -9,7 +10,9 @@ export interface ModelConfig {
   enableLogging?: boolean;
 }
 
-export class LocalModel {
+export class LocalModel implements ModelProvider {
+  id = 'local';
+  providerType = 'local' as const;
   private llama: LLama | null = null;
   private initialized: boolean = false;
 
@@ -46,24 +49,28 @@ export class LocalModel {
     }
   }
 
-  async generate(prompt: string, options: Partial<Generate> = {}): Promise<string> {
+  async generate(prompt: string, options: Partial<Generate> | ModelOptions = {}): Promise<string> {
     if (!this.initialized || !this.llama) {
-      throw new Error('Model not initialized. Call load() first.');
+      // Auto-load if not loaded
+      await this.load();
     }
 
     try {
       return new Promise((resolve, reject) => {
         let resultText = '';
         
+        // Map ModelOptions to Generate options if needed
+        const genOptions = options as any; // Cast for now, refined below
+        
         const params: Generate = {
           prompt,
           nThreads: this.config.threads ?? 4,
-          nTokPredict: options.nTokPredict ?? 1024,
-          topK: options.topK ?? 40,
-          topP: options.topP ?? 0.95,
-          temp: options.temp ?? 0.7,
-          repeatPenalty: options.repeatPenalty ?? 1.1,
-          ...options
+          nTokPredict: genOptions.maxTokens ?? 1024,
+          topK: genOptions.topK ?? 40,
+          topP: genOptions.topP ?? 0.95,
+          temp: genOptions.temperature ?? 0.7,
+          repeatPenalty: genOptions.frequencyPenalty ? (1 + genOptions.frequencyPenalty) : 1.1,
+          ...genOptions
         };
 
         this.llama!.inference(params, (response: InferenceResult) => {
@@ -82,6 +89,14 @@ export class LocalModel {
       console.error('Generation failed:', error);
       throw error;
     }
+  }
+
+  isReady(): boolean {
+    return this.initialized;
+  }
+
+  async *stream(prompt: string, options?: ModelOptions): AsyncIterable<string> {
+      throw new Error("Streaming not implemented for LocalModel yet");
   }
 
   isLoaded(): boolean {

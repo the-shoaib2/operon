@@ -4,10 +4,25 @@
 
 @layer base {
   :root {
-    --color-dark-bg: #0d1117;
-    --color-dark-text: #c9d1d9;
-    --color-gray-900: #161b22;
-    --color-gray-800: #21262d;
+    --color-dark-bg: #0a0a0a;
+    --color-dark-surface: #121212;
+    --color-dark-border: #2a2a2a;
+    --color-dark-text: #e5e5e5;
+    --color-dark-muted: #a3a3a3;
+  }
+
+  body {
+    @apply bg-dark-bg text-dark-text antialiased selection:bg-brand-primary/30 selection:text-white;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-black/40 backdrop-blur-md border border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-dark-surface/50 backdrop-blur-sm border border-white/5 hover:border-white/10 transition-colors duration-300;
   }
 }
 
@@ -16,6 +31,4 @@ body,
 #root {
   height: 100%;
   margin: 0;
-  background-color: var(--color-dark-bg);
-  color: var(--color-dark-text);
 }

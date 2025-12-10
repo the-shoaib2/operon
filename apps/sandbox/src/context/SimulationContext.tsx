@@ -12,7 +12,7 @@ interface SimulationContextType {
 const SimulationContext = createContext<SimulationContextType | null>(null);
 
 export const SimulationProvider = ({ children }: { children: ReactNode }) => {
-    const [network] = useState(() => new Network(12)); // Start with 12 PCs
+    const [network] = useState(() => new Network(5)); // Start with 5 PCs
     const [selectedPC, setSelectedPC] = useState<PC | null>(null);
     const [, setTick] = useState(0);
 
