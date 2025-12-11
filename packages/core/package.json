@@ -14,6 +14,8 @@
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
+        "@operone/fs": "workspace:*",
+        "@operone/shell": "workspace:*",
         "@repo/types": "workspace:*",
         "zod": "^3.22.4"
     },

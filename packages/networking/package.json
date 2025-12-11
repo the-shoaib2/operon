@@ -12,6 +12,7 @@
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
+        "@operone/core": "workspace:*",
         "@repo/types": "workspace:*",
         "bonjour": "^3.5.0",
         "socket.io": "^4.8.1",
