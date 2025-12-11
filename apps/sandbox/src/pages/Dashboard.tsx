@@ -2,6 +2,8 @@ import { PackageCard } from '../components/PackageCard';
 import { osPackages } from '../data/packages'; // Assuming this exists or I need to find where it is. It was imported in the original file.
 import { DashboardLayout } from '../components/DashboardLayout';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 
 const container = {
     hidden: { opacity: 0 },
@@ -40,6 +42,21 @@ export function Dashboard() {
                         >
                             Your advanced operating system simulation environment. Monitor network activity, file systems, and manage processes in real-time.
                         </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="mt-6"
+                        >
+                            <Link
+                                to="/docs"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-all border border-white/10 hover:border-white/20 backdrop-blur-sm group"
+                            >
+                                <BookOpen className="w-5 h-5 text-brand-primary" />
+                                <span>View System Documentation</span>
+                            </Link>
+                        </motion.div>
                     </div>
                     {/* Decorative Background */}
                     <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-brand-primary/20 rounded-full blur-3xl opacity-50" />

@@ -12,6 +12,7 @@ const MemoryPage = lazy(() => import('./pages/MemoryPage').then(m => ({ default:
 const ProcessPage = lazy(() => import('./pages/ProcessPage').then(m => ({ default: m.ProcessPage })));
 const DatabasePage = lazy(() => import('./pages/DatabasePage').then(m => ({ default: m.DatabasePage })));
 const AutomationPage = lazy(() => import('./pages/AutomationPage').then(m => ({ default: m.AutomationPage })));
+const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })));
 
 // Loading Component
 const PageLoader = () => (
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
     {
         path: '/',
         element: <SuspensedElement><Dashboard /></SuspensedElement>,
+    },
+    {
+        path: '/docs',
+        element: <SuspensedElement><DocsPage /></SuspensedElement>,
     },
     {
         path: '/networking',
