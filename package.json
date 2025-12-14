@@ -81,6 +81,9 @@
         "zod"
       ]
     },
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ],
     "packageExtensions": {
       "*": {
         "optionalDependencies": {
